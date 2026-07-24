@@ -1,379 +1,210 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>생성형 AI 역량진단 | 초급·중급 과정 추천</title>
-  <style>
-    :root{
-      --bg:#f4f7fb;
-      --card:#ffffff;
-      --text:#172033;
-      --muted:#64748b;
-      --line:#dbe3ef;
-      --primary:#2457d6;
-      --primary2:#6b8cff;
-      --soft:#eef3ff;
-      --good:#0f9f6e;
-      --warn:#d97706;
-      --danger:#dc2626;
-      --shadow:0 14px 35px rgba(32,56,117,.10);
-      --radius:22px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>생성형 AI 역량진단</title>
+<style>
+:root{
+  --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#64748b;--line:#dbe3ef;
+  --primary:#2457d6;--primary2:#6b8cff;--soft:#eef3ff;--good:#0f9f6e;
+  --warn:#d97706;--danger:#dc2626;--shadow:0 14px 35px rgba(32,56,117,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo",system-ui,-apple-system,sans-serif;
+  background:radial-gradient(circle at top left,rgba(107,140,255,.12),transparent 34%),linear-gradient(180deg,#f8faff 0%,var(--bg) 100%);
+  color:var(--text);line-height:1.6
+}
+button,input,select{font:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 18px 80px}
+.hero{
+  background:linear-gradient(135deg,#163c9d 0%,#3564dd 55%,#6f91ff 100%);color:#fff;
+  border-radius:28px;padding:38px 34px;box-shadow:var(--shadow);position:relative;overflow:hidden
+}
+.hero:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-90px;top:-100px;background:rgba(255,255,255,.11)}
+.eyebrow{font-size:13px;font-weight:900;letter-spacing:.1em;opacity:.9}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:8px 0 12px}
+.hero p{margin:0;max-width:760px;font-size:17px;opacity:.94}
+.notice,.section,#result,.admin-card{
+  background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 28px rgba(32,56,117,.06)
+}
+.notice{margin:22px 0;padding:18px 20px;color:var(--muted)}
+.notice strong{color:var(--text)}
+form{display:grid;gap:20px}
+.section{padding:26px}
+.section-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px}
+.num{width:42px;height:42px;flex:0 0 42px;border-radius:14px;display:grid;place-items:center;background:var(--soft);color:var(--primary);font-weight:900}
+.section h2,.admin-card h2{margin:0;font-size:22px}
+.desc{margin:4px 0 0;color:var(--muted);font-size:14px}
+.options{display:grid;gap:10px}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.choice{
+  display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;
+  padding:14px 15px;cursor:pointer;transition:.18s;background:#fff;min-height:54px
+}
+.choice:hover{border-color:#9db3f5;background:#f9fbff}
+.choice:has(input:checked){border-color:var(--primary2);background:var(--soft);box-shadow:inset 0 0 0 1px rgba(36,87,214,.14)}
+input[type="radio"],input[type="checkbox"]{margin-top:4px;accent-color:var(--primary);transform:scale(1.12)}
+.choice-title{font-weight:800}
+.choice small{display:block;color:var(--muted);margin-top:2px}
+.demographic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{display:grid;gap:7px}
+.field label{font-size:14px;font-weight:800;color:#334155}
+.field select,.field input{
+  width:100%;border:1px solid var(--line);border-radius:13px;padding:13px 14px;background:#fff;color:var(--text);outline:none
+}
+.field select:focus,.field input:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(36,87,214,.1)}
+.actionbar{
+  position:sticky;bottom:12px;z-index:10;display:flex;gap:12px;justify-content:center;margin-top:26px;padding:14px;
+  border:1px solid rgba(219,227,239,.9);background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-radius:20px;box-shadow:var(--shadow)
+}
+button{border:0;border-radius:14px;padding:14px 20px;font-weight:900;cursor:pointer}
+.primary{color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));min-width:210px}
+.secondary{background:#edf1f7;color:#334155}
+.danger{background:#fff1f0;color:#b42318}
+.error,.status{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;font-weight:800}
+.error{color:#b42318;background:#fff1f0;border:1px solid #ffd5d2}
+.status.saving{display:block;background:#eef3ff;color:#264eae}
+.status.success{display:block;background:#eaf8f3;color:#087a53}
+.status.fail{display:block;background:#fff1f0;color:#b42318}
+#result{display:none;margin-top:26px;padding:28px}
+.result-top{display:grid;grid-template-columns:180px 1fr;gap:26px;align-items:center}
+.score-ring{
+  --score:0;width:170px;height:170px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--primary) calc(var(--score)*1%),#e6ebf4 0);position:relative
+}
+.score-ring:before{content:"";position:absolute;inset:14px;border-radius:50%;background:#fff}
+.score-inner{position:relative;text-align:center}
+.score-value{font-size:44px;font-weight:950;line-height:1}
+.score-unit{color:var(--muted);font-size:14px;margin-top:6px}
+.badge{display:inline-flex;border-radius:999px;padding:7px 12px;font-weight:900;font-size:14px;margin-bottom:10px}
+.beginner{background:#fff4df;color:#a35a00}
+.borderline{background:#eef3ff;color:#264eae}
+.intermediate{background:#eaf8f3;color:#087a53}
+.recommendation{font-size:29px;font-weight:950;margin:0 0 8px}
+.result-copy{color:var(--muted);margin:0}
+.meter-wrap{margin-top:24px;display:grid;gap:12px}
+.meter-row{display:grid;grid-template-columns:150px 1fr 52px;gap:12px;align-items:center}
+.meter-label{font-weight:800;font-size:14px}
+.meter{height:10px;background:#e9edf4;border-radius:999px;overflow:hidden}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:999px}
+.meter-score{text-align:right;font-weight:900;font-size:14px}
+.insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.insight-box{border-radius:16px;padding:18px;background:#f7f9fc;border:1px solid var(--line)}
+.insight-box h3{margin:0 0 8px;font-size:17px}
+.insight-box ul{margin:0;padding-left:20px;color:#475569}
+.criteria{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.hidden{display:none!important}
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo",system-ui,-apple-system,sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(107,140,255,.12), transparent 34%),
-        linear-gradient(180deg,#f8faff 0%,var(--bg) 100%);
-      color:var(--text);
-      line-height:1.6;
-    }
-
-    .wrap{max-width:980px;margin:0 auto;padding:42px 20px 80px}
-
-    .hero{
-      background:linear-gradient(135deg,#163c9d 0%,#3564dd 55%,#6f91ff 100%);
-      color:#fff;
-      border-radius:28px;
-      padding:38px 34px;
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    .hero:after{
-      content:"";
-      position:absolute;
-      width:260px;height:260px;border-radius:50%;
-      right:-80px;top:-90px;
-      background:rgba(255,255,255,.12);
-    }
-    .eyebrow{font-size:14px;font-weight:800;letter-spacing:.08em;opacity:.88}
-    h1{margin:8px 0 12px;font-size:clamp(30px,5vw,48px);line-height:1.16}
-    .hero p{margin:0;max-width:730px;font-size:17px;opacity:.94}
-
-    .notice{
-      margin:22px 0 28px;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px 20px;
-      color:var(--muted);
-      box-shadow:0 8px 22px rgba(32,56,117,.06);
-    }
-    .notice strong{color:var(--text)}
-
-    form{display:grid;gap:20px}
-
-    .section{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:26px;
-      box-shadow:0 10px 28px rgba(32,56,117,.06);
-    }
-    .section-head{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      margin-bottom:20px;
-    }
-    .num{
-      width:42px;height:42px;flex:0 0 42px;
-      border-radius:14px;
-      display:grid;place-items:center;
-      background:var(--soft);
-      color:var(--primary);
-      font-weight:900;
-    }
-    .section h2{margin:0;font-size:22px}
-    .section .desc{margin:4px 0 0;color:var(--muted);font-size:14px}
-
-    .participant-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-    }
-    .field{display:grid;gap:7px}
-    .field.full{grid-column:1/-1}
-    .field label{font-size:14px;font-weight:800;color:#334155}
-    .field input,.field select{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:13px;
-      padding:13px 14px;
-      font:inherit;
-      color:var(--text);
-      background:#fff;
-      outline:none;
-    }
-    .field input:focus,.field select:focus{
-      border-color:var(--primary2);
-      box-shadow:0 0 0 3px rgba(36,87,214,.10);
-    }
-    .submit-status{
-      margin-top:16px;
-      border-radius:13px;
-      padding:13px 15px;
-      font-weight:800;
-      display:none;
-    }
-    .submit-status.sending{display:block;background:#eef3ff;color:#264eae}
-    .submit-status.success{display:block;background:#eaf8f3;color:#087a53}
-    .submit-status.fail{display:block;background:#fff1f0;color:#b42318}
-    .options{display:grid;gap:10px}
-    .options.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .options.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-
-    label.choice{
-      display:flex;
-      gap:11px;
-      align-items:flex-start;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px 15px;
-      cursor:pointer;
-      transition:.18s ease;
-      background:#fff;
-      min-height:54px;
-    }
-    label.choice:hover{border-color:#9db3f5;background:#f9fbff}
-    label.choice:has(input:checked){
-      border-color:var(--primary2);
-      background:var(--soft);
-      box-shadow:inset 0 0 0 1px rgba(36,87,214,.14);
-    }
-    input[type="radio"],input[type="checkbox"]{
-      margin-top:4px;
-      accent-color:var(--primary);
-      transform:scale(1.12);
-    }
-    .choice-title{font-weight:750}
-    .choice small{display:block;color:var(--muted);margin-top:2px}
-
-    .actionbar{
-      position:sticky;
-      bottom:14px;
-      z-index:10;
-      display:flex;
-      gap:12px;
-      justify-content:center;
-      margin-top:28px;
-      padding:14px;
-      border:1px solid rgba(219,227,239,.9);
-      background:rgba(255,255,255,.88);
-      backdrop-filter:blur(14px);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-    }
-    button{
-      border:0;
-      border-radius:14px;
-      padding:14px 22px;
-      font-weight:850;
-      font-size:16px;
-      cursor:pointer;
-    }
-    .primary{
-      color:#fff;
-      background:linear-gradient(135deg,var(--primary),var(--primary2));
-      min-width:210px;
-    }
-    .secondary{background:#edf1f7;color:#334155}
-
-    #result{
-      display:none;
-      margin-top:26px;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:26px;
-      padding:28px;
-      box-shadow:var(--shadow);
-    }
-    .result-top{
-      display:grid;
-      grid-template-columns:180px 1fr;
-      gap:26px;
-      align-items:center;
-    }
-    .score-ring{
-      --score:0;
-      width:170px;height:170px;border-radius:50%;
-      display:grid;place-items:center;
-      background:conic-gradient(var(--primary) calc(var(--score)*1%),#e6ebf4 0);
-      position:relative;
-    }
-    .score-ring:before{
-      content:"";
-      position:absolute;inset:14px;border-radius:50%;
-      background:#fff;
-    }
-    .score-inner{position:relative;text-align:center}
-    .score-value{font-size:44px;font-weight:950;line-height:1}
-    .score-unit{color:var(--muted);font-size:14px;margin-top:6px}
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      border-radius:999px;
-      padding:7px 12px;
-      font-weight:850;
-      font-size:14px;
-      margin-bottom:10px;
-    }
-    .badge.beginner{background:#fff4df;color:#a35a00}
-    .badge.intermediate{background:#eaf8f3;color:#087a53}
-    .badge.borderline{background:#eef3ff;color:#264eae}
-
-    .recommendation{font-size:29px;font-weight:950;margin:0 0 8px}
-    .result-copy{color:var(--muted);margin:0}
-
-    .meter-wrap{margin-top:24px;display:grid;gap:12px}
-    .meter-row{
-      display:grid;
-      grid-template-columns:150px 1fr 52px;
-      gap:12px;align-items:center;
-    }
-    .meter-label{font-weight:760;font-size:14px}
-    .meter{height:10px;background:#e9edf4;border-radius:999px;overflow:hidden}
-    .meter > span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:999px}
-    .meter-score{text-align:right;font-weight:800;font-size:14px}
-
-    .reason-box{
-      margin-top:22px;
-      border-radius:16px;
-      padding:18px;
-      background:#f7f9fc;
-      border:1px solid var(--line);
-    }
-    .reason-box h3{margin:0 0 8px;font-size:17px}
-    .reason-box ul{margin:0;padding-left:20px;color:#475569}
-
-    .criteria{
-      margin-top:22px;
-      padding-top:20px;
-      border-top:1px solid var(--line);
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .error{
-      display:none;
-      margin:16px 0 0;
-      color:#b42318;
-      background:#fff1f0;
-      border:1px solid #ffd5d2;
-      padding:12px 14px;
-      border-radius:12px;
-      font-weight:700;
-    }
-
-    footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
-
-    @media (max-width:720px){
-      .wrap{padding:20px 14px 60px}
-      .hero{padding:29px 23px}
-      .section{padding:20px}
-      .participant-grid{grid-template-columns:1fr}
-      .field.full{grid-column:auto}
-      .options.grid2,.options.grid3{grid-template-columns:1fr}
-      .result-top{grid-template-columns:1fr;text-align:center}
-      .score-ring{margin:0 auto}
-      .meter-row{grid-template-columns:110px 1fr 44px}
-      .actionbar{bottom:8px}
-      button{padding:13px 16px}
-      .primary{min-width:0;flex:1}
-    }
-
-    @media print{
-      body{background:#fff}
-      .hero,.notice,form,.actionbar,footer{display:none!important}
-      #result{display:block!important;box-shadow:none;border:0;margin:0}
-      .wrap{max-width:none;padding:0}
-    }
-  </style>
+/* 관리자 */
+#adminApp{display:none}
+.admin-login{max-width:520px;margin:32px auto 0}
+.admin-card{padding:24px;margin-top:20px}
+.admin-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:20px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(32,56,117,.05)}
+.kpi .label{color:var(--muted);font-size:13px;font-weight:800}
+.kpi .value{font-size:30px;font-weight:950;margin-top:4px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.chart-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+.chart-card h3{margin:0 0 16px;font-size:18px}
+.bar-list{display:grid;gap:11px}
+.bar-item{display:grid;grid-template-columns:130px 1fr 56px;gap:10px;align-items:center}
+.bar-name{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:11px;border-radius:999px;background:#e8edf5;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary2))}
+.bar-value{text-align:right;font-size:13px;font-weight:900}
+.org-summary{
+  background:linear-gradient(135deg,#f1f5ff,#f8fbff);border:1px solid #dbe5ff;border-radius:18px;padding:20px
+}
+.org-summary h3{margin:0 0 10px}
+.org-summary p{margin:0;color:#475569}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.filters select,.filters input{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+table{width:100%;border-collapse:collapse;min-width:900px;background:#fff}
+th,td{padding:12px 13px;border-bottom:1px solid #edf1f6;text-align:left;font-size:13px}
+th{background:#f7f9fc;font-weight:900;position:sticky;top:0}
+td.numc{text-align:right;font-variant-numeric:tabular-nums}
+.empty{text-align:center;color:var(--muted);padding:40px}
+footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
+@media(max-width:820px){
+  .grid2,.grid3,.demographic-grid,.insight-grid,.dashboard-grid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .result-top{grid-template-columns:1fr;text-align:center}.score-ring{margin:0 auto}
+  .bar-item{grid-template-columns:100px 1fr 48px}
+}
+@media(max-width:560px){
+  .wrap{padding:18px 12px 60px}.hero{padding:28px 22px}.section,#result,.admin-card{padding:20px}
+  .meter-row{grid-template-columns:105px 1fr 46px}.kpi-grid{grid-template-columns:1fr 1fr}
+  .primary{min-width:0;flex:1}.recommendation{font-size:24px}
+}
+@media print{
+  body{background:#fff}.hero,.notice,form,.actionbar,footer,#adminApp{display:none!important}
+  #result{display:block!important;border:0;box-shadow:none;margin:0}.wrap{max-width:none;padding:0}
+}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <div class="eyebrow">GENERATIVE AI READINESS ASSESSMENT</div>
-      <h1>생성형 AI 역량진단</h1>
-      <p>사용 빈도, 활용 도구, 기능 수준, 업무 활용 범위, 서비스 등급, 학습 경험을 종합하여 초급·중급 과정 중 적합한 교육을 추천합니다.</p>
-    </section>
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">GENERATIVE AI READINESS ASSESSMENT</div>
+    <h1 id="heroTitle">생성형 AI 역량진단</h1>
+    <p id="heroDesc">사용 빈도, 활용 도구, 기능 수준, 업무 활용 범위, 서비스 등급과 학습 경험을 종합하여 개인의 현재 수준과 적합한 교육과정을 안내합니다.</p>
+  </section>
 
+  <section id="participantApp">
     <div class="notice">
       <strong>진단 안내</strong><br>
-      최근 3개월의 실제 사용 경험을 기준으로 응답해 주세요. 단순한 자신감이 아니라 사용 행동과 기능 경험을 중심으로 점수를 산출합니다.
+      최근 3개월의 실제 사용 경험을 기준으로 응답해 주세요. 본 진단 결과는 교육과정 선택을 위한 참고 자료이며, 응답은 조직의 AI 활용 현황 분석에 활용됩니다.
     </div>
 
     <form id="assessmentForm">
-
       <section class="section">
-        <div class="section-head">
-          <div class="num">0</div>
-          <div>
-            <h2>참여자 정보</h2>
-            <p class="desc">결과 확인과 과정 배정을 위해 필요한 최소 정보입니다.</p>
-          </div>
-        </div>
-        <div class="participant-grid">
+        <div class="section-head"><div class="num">0</div><div><h2>참여자 정보</h2><p class="desc">개인을 식별하지 않는 최소 정보만 수집합니다.</p></div></div>
+        <div class="demographic-grid">
           <div class="field">
-            <label for="participantName">이름 *</label>
-            <input id="participantName" name="participantName" type="text" maxlength="30" required placeholder="홍길동">
-          </div>
-          <div class="field">
-            <label for="department">부서·소속 *</label>
-            <input id="department" name="department" type="text" maxlength="60" required placeholder="예: 경영지원팀">
+            <label for="gender">성별</label>
+            <select id="gender" required>
+              <option value="">선택해 주세요</option>
+              <option value="남성">남성</option>
+              <option value="여성">여성</option>
+              <option value="응답하지 않음">응답하지 않음</option>
+            </select>
           </div>
           <div class="field">
-            <label for="employeeNo">사번·식별번호</label>
-            <input id="employeeNo" name="employeeNo" type="text" maxlength="30" placeholder="선택 입력">
-          </div>
-          <div class="field">
-            <label for="courseGroup">교육 차수·기수</label>
-            <input id="courseGroup" name="courseGroup" type="text" maxlength="40" placeholder="예: 2026년 1기">
-          </div>
-          <div class="field full">
-            <label class="choice">
-              <input id="privacyConsent" type="checkbox" required>
-              <span>
-                <span class="choice-title">진단 결과 저장에 동의합니다. *</span>
-                <small>입력 정보와 진단 결과는 교육 과정 배정 및 통계 분석 목적으로만 사용됩니다.</small>
-              </span>
-            </label>
+            <label for="ageGroup">연령대</label>
+            <select id="ageGroup" required>
+              <option value="">선택해 주세요</option>
+              <option value="20대 이하">20대 이하</option>
+              <option value="30대">30대</option>
+              <option value="40대">40대</option>
+              <option value="50대">50대</option>
+              <option value="60대 이상">60대 이상</option>
+            </select>
           </div>
         </div>
       </section>
+
       <section class="section">
-        <div class="section-head">
-          <div class="num">1</div>
-          <div>
-            <h2>AI 사용 빈도</h2>
-            <p class="desc">최근 3개월 동안 생성형 AI를 얼마나 자주 사용했습니까?</p>
-          </div>
-        </div>
+        <div class="section-head"><div class="num">1</div><div><h2>AI 사용 빈도</h2><p class="desc">최근 3개월 동안 생성형 AI를 얼마나 자주 사용했습니까?</p></div></div>
         <div class="options">
           <label class="choice"><input type="radio" name="frequency" value="0"><span><span class="choice-title">거의 사용하지 않음</span><small>월 1회 미만</small></span></label>
-          <label class="choice"><input type="radio" name="frequency" value="5"><span><span class="choice-title">월 1~3회</span></span></label>
-          <label class="choice"><input type="radio" name="frequency" value="10"><span><span class="choice-title">주 1회 정도</span></span></label>
-          <label class="choice"><input type="radio" name="frequency" value="15"><span><span class="choice-title">주 2~4회</span></span></label>
-          <label class="choice"><input type="radio" name="frequency" value="18"><span><span class="choice-title">거의 매일</span></span></label>
-          <label class="choice"><input type="radio" name="frequency" value="20"><span><span class="choice-title">하루 여러 번</span></span></label>
+          <label class="choice"><input type="radio" name="frequency" value="5"><span class="choice-title">월 1~3회</span></label>
+          <label class="choice"><input type="radio" name="frequency" value="10"><span class="choice-title">주 1회 정도</span></label>
+          <label class="choice"><input type="radio" name="frequency" value="15"><span class="choice-title">주 2~4회</span></label>
+          <label class="choice"><input type="radio" name="frequency" value="18"><span class="choice-title">거의 매일</span></label>
+          <label class="choice"><input type="radio" name="frequency" value="20"><span class="choice-title">하루 여러 번</span></label>
         </div>
       </section>
 
       <section class="section">
-        <div class="section-head">
-          <div class="num">2</div>
-          <div>
-            <h2>활용 중인 AI 도구</h2>
-            <p class="desc">최근 3개월 동안 실제로 사용한 도구를 모두 선택해 주세요.</p>
-          </div>
-        </div>
-        <div class="options grid2" id="toolsGroup">
+        <div class="section-head"><div class="num">2</div><div><h2>활용 중인 AI 도구</h2><p class="desc">최근 3개월 동안 실제로 사용한 도구를 모두 선택해 주세요.</p></div></div>
+        <div class="options grid2">
           <label class="choice"><input type="checkbox" name="tools" value="4"><span class="choice-title">ChatGPT</span></label>
           <label class="choice"><input type="checkbox" name="tools" value="4"><span class="choice-title">Gemini</span></label>
           <label class="choice"><input type="checkbox" name="tools" value="4"><span class="choice-title">Claude</span></label>
@@ -385,14 +216,8 @@
       </section>
 
       <section class="section">
-        <div class="section-head">
-          <div class="num">3</div>
-          <div>
-            <h2>활용 기능 수준</h2>
-            <p class="desc">최근 3개월 동안 한 번 이상 직접 실행한 기능을 선택해 주세요.</p>
-          </div>
-        </div>
-        <div class="options grid2" id="featuresGroup">
+        <div class="section-head"><div class="num">3</div><div><h2>활용 기능 수준</h2><p class="desc">최근 3개월 동안 한 번 이상 직접 실행한 기능을 선택해 주세요.</p></div></div>
+        <div class="options grid2">
           <label class="choice"><input type="checkbox" name="features" value="2"><span class="choice-title">일반 채팅·질문</span></label>
           <label class="choice"><input type="checkbox" name="features" value="3"><span class="choice-title">웹 검색 기능</span></label>
           <label class="choice"><input type="checkbox" name="features" value="3"><span class="choice-title">이미지 업로드·분석</span></label>
@@ -409,14 +234,8 @@
       </section>
 
       <section class="section">
-        <div class="section-head">
-          <div class="num">4</div>
-          <div>
-            <h2>업무 활용 범위</h2>
-            <p class="desc">최근 3개월 동안 생성형 AI를 실제 업무에 사용한 영역을 선택해 주세요.</p>
-          </div>
-        </div>
-        <div class="options grid3" id="workGroup">
+        <div class="section-head"><div class="num">4</div><div><h2>업무 활용 범위</h2><p class="desc">최근 3개월 동안 실제 업무에 활용한 영역을 선택해 주세요.</p></div></div>
+        <div class="options grid3">
           <label class="choice"><input type="checkbox" name="work" value="2"><span class="choice-title">검색·자료조사</span></label>
           <label class="choice"><input type="checkbox" name="work" value="2"><span class="choice-title">이메일·안내문</span></label>
           <label class="choice"><input type="checkbox" name="work" value="2"><span class="choice-title">보고서·기획서</span></label>
@@ -431,27 +250,15 @@
       </section>
 
       <section class="section">
-        <div class="section-head">
-          <div class="num">5</div>
-          <div>
-            <h2>서비스 등급</h2>
-            <p class="desc">현재 주로 사용하는 생성형 AI 서비스의 이용 형태를 선택해 주세요.</p>
-          </div>
-        </div>
+        <div class="section-head"><div class="num">5</div><div><h2>서비스 등급</h2><p class="desc">현재 주로 사용하는 생성형 AI 서비스의 이용 형태를 선택해 주세요.</p></div></div>
         <div class="options grid2">
-          <label class="choice"><input type="radio" name="plan" value="0"><span><span class="choice-title">무료 서비스만 사용</span></span></label>
-          <label class="choice"><input type="radio" name="plan" value="10"><span><span class="choice-title">하나 이상의 유료 서비스 사용</span></span></label>
+          <label class="choice"><input type="radio" name="plan" value="0"><span class="choice-title">무료 서비스만 사용</span></label>
+          <label class="choice"><input type="radio" name="plan" value="10"><span class="choice-title">하나 이상의 유료 서비스 사용</span></label>
         </div>
       </section>
 
       <section class="section">
-        <div class="section-head">
-          <div class="num">6</div>
-          <div>
-            <h2>AI 학습 경험</h2>
-            <p class="desc">가장 높은 수준의 학습 경험 하나를 선택해 주세요.</p>
-          </div>
-        </div>
+        <div class="section-head"><div class="num">6</div><div><h2>AI 학습 경험</h2><p class="desc">가장 높은 수준의 학습 경험 하나를 선택해 주세요.</p></div></div>
         <div class="options">
           <label class="choice"><input type="radio" name="learning" value="0"><span class="choice-title">별도의 학습 경험 없음</span></label>
           <label class="choice"><input type="radio" name="learning" value="2"><span class="choice-title">영상·블로그 등을 통해 개별적으로 학습</span></label>
@@ -462,21 +269,15 @@
       </section>
 
       <div class="error" id="errorMessage">필수 항목을 모두 선택해 주세요.</div>
-
       <div class="actionbar">
         <button type="button" class="secondary" id="resetBtn">초기화</button>
         <button type="submit" class="primary">진단 결과 확인</button>
       </div>
     </form>
 
-    <section id="result" aria-live="polite">
+    <section id="result">
       <div class="result-top">
-        <div class="score-ring" id="scoreRing">
-          <div class="score-inner">
-            <div class="score-value" id="totalScore">0</div>
-            <div class="score-unit">100점 만점</div>
-          </div>
-        </div>
+        <div class="score-ring" id="scoreRing"><div class="score-inner"><div class="score-value" id="totalScore">0</div><div class="score-unit">100점 만점</div></div></div>
         <div>
           <div class="badge" id="levelBadge">과정 추천</div>
           <h2 class="recommendation" id="recommendation"></h2>
@@ -486,16 +287,15 @@
 
       <div class="meter-wrap" id="meters"></div>
 
-      <div class="reason-box">
-        <h3>추천 근거</h3>
-        <ul id="reasons"></ul>
+      <div class="insight-grid">
+        <div class="insight-box"><h3>현재 활용 특성</h3><ul id="personalTraits"></ul></div>
+        <div class="insight-box"><h3>추천 학습 방향</h3><ul id="learningDirection"></ul></div>
       </div>
 
-      <div id="submitStatus" class="submit-status"></div>
+      <div id="saveStatus" class="status"></div>
 
       <div class="criteria">
-        <strong>분류 기준</strong><br>
-        총점 55점 이상이면서 ① 주 1회 이상 사용, ② 2개 이상의 AI 도구 활용, ③ 중급 핵심 기능 2개 이상 활용, ④ 업무 활용 영역 3개 이상인 경우 중급 과정을 추천합니다. 점수는 높지만 핵심 조건이 부족한 경우에는 초급 과정을 통해 기반 역량을 보완하도록 안내합니다.
+        본 결과는 교육과정 선택을 돕기 위한 참고 자료입니다. 최종 과정은 교육 내용과 본인의 학습 목적을 함께 고려하여 선택해 주세요.
       </div>
 
       <div class="actionbar" style="position:static;margin-top:22px">
@@ -503,252 +303,419 @@
         <button type="button" class="primary" id="copyBtn">결과 복사</button>
       </div>
     </section>
+  </section>
 
-    <footer>생성형 AI 역량진단 · 초급/중급 과정 추천용</footer>
-  </main>
+  <section id="adminApp">
+    <div id="adminLogin" class="admin-card admin-login">
+      <h2>관리자 로그인</h2>
+      <p class="desc">Firebase Authentication에 등록된 관리자 계정으로 로그인합니다.</p>
+      <div class="field" style="margin-top:18px"><label for="adminEmail">이메일</label><input id="adminEmail" type="email" autocomplete="username"></div>
+      <div class="field" style="margin-top:12px"><label for="adminPassword">비밀번호</label><input id="adminPassword" type="password" autocomplete="current-password"></div>
+      <div id="loginError" class="error"></div>
+      <button id="loginBtn" class="primary" style="width:100%;margin-top:16px">로그인</button>
+    </div>
 
-<script>
-  // Google Apps Script를 웹 앱으로 배포한 뒤 아래 주소를 교체하세요.
-  const GOOGLE_SCRIPT_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
-
-  const form = document.getElementById('assessmentForm');
-  const result = document.getElementById('result');
-  const errorMessage = document.getElementById('errorMessage');
-
-  function setupNoneLogic(groupName){
-    const checks = [...document.querySelectorAll(`input[name="${groupName}"]`)];
-    checks.forEach(check => {
-      check.addEventListener('change', () => {
-        const none = checks.find(c => c.dataset.none === groupName);
-        if(check === none && check.checked){
-          checks.forEach(c => { if(c !== none) c.checked = false; });
-        }else if(check !== none && check.checked && none){
-          none.checked = false;
-        }
-      });
-    });
-  }
-
-  ['tools','features','work'].forEach(setupNoneLogic);
-
-  function radioValue(name){
-    const selected = document.querySelector(`input[name="${name}"]:checked`);
-    return selected ? Number(selected.value) : null;
-  }
-
-  function checkedValues(name){
-    return [...document.querySelectorAll(`input[name="${name}"]:checked`)];
-  }
-
-  function sumCapped(name, cap){
-    return Math.min(cap, checkedValues(name).reduce((sum, el) => sum + Number(el.value), 0));
-  }
-
-  function isFormComplete(){
-    const radiosComplete = ['frequency','plan','learning'].every(name => radioValue(name) !== null);
-    const checksComplete = ['tools','features','work'].every(name => checkedValues(name).length > 0);
-    const participantComplete =
-      document.getElementById('participantName').value.trim() &&
-      document.getElementById('department').value.trim() &&
-      document.getElementById('privacyConsent').checked;
-    return radiosComplete && checksComplete && participantComplete;
-  }
-
-  function selectedLabels(name){
-    return checkedValues(name)
-      .filter(input => !input.dataset.none)
-      .map(input => input.closest('label').innerText.trim().replace(/\s+/g,' '));
-  }
-
-  async function sendToGoogleSheet(payload){
-    const status = document.getElementById('submitStatus');
-
-    if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')){
-      status.className = 'submit-status fail';
-      status.textContent = '진단은 완료되었지만 Google Apps Script 주소가 아직 연결되지 않아 결과가 저장되지 않았습니다.';
-      return false;
-    }
-
-    status.className = 'submit-status sending';
-    status.textContent = '진단 결과를 저장하고 있습니다…';
-
-    try{
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method:'POST',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-      if(!data.ok) throw new Error(data.message || '저장 실패');
-
-      status.className = 'submit-status success';
-      status.textContent = '진단 결과가 정상적으로 저장되었습니다.';
-      return true;
-    }catch(error){
-      console.error(error);
-      status.className = 'submit-status fail';
-      status.textContent = '결과 저장에 실패했습니다. 인터넷 연결 또는 관리자 설정을 확인해 주세요.';
-      return false;
-    }
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if(!isFormComplete()){
-      errorMessage.style.display = 'block';
-      errorMessage.scrollIntoView({behavior:'smooth', block:'center'});
-      return;
-    }
-    errorMessage.style.display = 'none';
-
-    const frequency = radioValue('frequency');          // 20
-    const tools = sumCapped('tools', 20);               // 20
-    const features = sumCapped('features', 25);         // 25
-    const work = sumCapped('work', 15);                 // 15
-    const plan = radioValue('plan');                    // 10
-    const learning = radioValue('learning');            // 10
-    const total = frequency + tools + features + work + plan + learning;
-
-    const selectedTools = checkedValues('tools').filter(x => !x.dataset.none);
-    const selectedWork = checkedValues('work').filter(x => !x.dataset.none);
-    const selectedFeatures = checkedValues('features').filter(x => !x.dataset.none);
-
-    const advancedFeatureLabels = [
-      '심층 리서치',
-      '남들이 만든 GPTs 활용',
-      'NotebookLM 활용',
-      'Projects·프로젝트 기능',
-      '데이터·엑셀 분석',
-      '나만의 GPT·맞춤형 AI 제작',
-      '여러 AI를 연결한 업무 흐름 설계'
-    ];
-
-    const advancedCount = selectedFeatures.filter(input => {
-      const text = input.closest('label').innerText.trim();
-      return advancedFeatureLabels.some(label => text.includes(label));
-    }).length;
-
-    const coreConditions = {
-      frequency: frequency >= 10,
-      tools: selectedTools.length >= 2,
-      advanced: advancedCount >= 2,
-      work: selectedWork.length >= 3
-    };
-
-    const corePassed = Object.values(coreConditions).every(Boolean);
-    let level, badgeClass, copy;
-
-    if(total >= 55 && corePassed){
-      level = '중급 과정 추천';
-      badgeClass = 'intermediate';
-      copy = '기본적인 생성형 AI 활용 경험을 바탕으로 업무 흐름 설계, 문서·데이터 처리, 맞춤형 AI 활용을 학습하기에 적합합니다.';
-    }else if(total >= 45){
-      level = '초급 과정 추천 · 중급 준비 단계';
-      badgeClass = 'borderline';
-      copy = '일부 활용 경험은 있으나 중급 과정의 핵심 기능을 원활히 따라가기 위해 초급 과정에서 기능과 활용 기반을 먼저 정리하는 것이 좋습니다.';
-    }else{
-      level = '초급 과정 추천';
-      badgeClass = 'beginner';
-      copy = '생성형 AI의 주요 기능과 업무 활용 방법을 차근차근 익히는 초급 과정이 적합합니다.';
-    }
-
-    document.getElementById('totalScore').textContent = total;
-    document.getElementById('scoreRing').style.setProperty('--score', total);
-    const badge = document.getElementById('levelBadge');
-    badge.className = `badge ${badgeClass}`;
-    badge.textContent = total >= 55 && corePassed ? 'LEVEL 2' : 'LEVEL 1';
-    document.getElementById('recommendation').textContent = level;
-    document.getElementById('resultCopy').textContent = copy;
-
-    const categories = [
-      ['사용 빈도', frequency, 20],
-      ['AI 도구', tools, 20],
-      ['기능 수준', features, 25],
-      ['업무 활용', work, 15],
-      ['서비스 등급', plan, 10],
-      ['학습 경험', learning, 10]
-    ];
-
-    document.getElementById('meters').innerHTML = categories.map(([label, score, max]) => `
-      <div class="meter-row">
-        <div class="meter-label">${label}</div>
-        <div class="meter"><span style="width:${(score/max)*100}%"></span></div>
-        <div class="meter-score">${score}/${max}</div>
+    <div id="adminDashboard" class="hidden">
+      <div class="admin-card">
+        <div class="admin-toolbar">
+          <div><h2 id="adminTitle">조직 AI 활용 현황</h2><p class="desc" id="surveyLabel"></p></div>
+          <div class="admin-actions">
+            <button class="secondary" id="refreshBtn">새로고침</button>
+            <button class="secondary" id="csvBtn">CSV 다운로드</button>
+            <button class="secondary" id="logoutBtn">로그아웃</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="kpiGrid"></div>
       </div>
-    `).join('');
 
-    const reasons = [];
-    reasons.push(`총점은 ${total}점입니다.`);
-    reasons.push(coreConditions.frequency ? '주 1회 이상 생성형 AI를 사용하고 있습니다.' : 'AI 사용 빈도가 주 1회 미만입니다.');
-    reasons.push(coreConditions.tools ? `${selectedTools.length}개의 AI 도구를 실제로 활용하고 있습니다.` : '실제로 활용하는 AI 도구가 2개 미만입니다.');
-    reasons.push(coreConditions.advanced ? `중급 핵심 기능을 ${advancedCount}개 활용한 경험이 있습니다.` : '심층 리서치, GPTs, NotebookLM 등 중급 핵심 기능 경험이 부족합니다.');
-    reasons.push(coreConditions.work ? `${selectedWork.length}개의 업무 영역에서 AI를 활용하고 있습니다.` : '실제 업무 활용 영역이 3개 미만입니다.');
+      <div class="admin-card">
+        <div class="org-summary">
+          <h3>조직 AI 활용 특성</h3>
+          <p id="orgSummaryText">응답 데이터를 불러오면 자동 분석 결과가 표시됩니다.</p>
+        </div>
+      </div>
 
-    document.getElementById('reasons').innerHTML = reasons.map(r => `<li>${r}</li>`).join('');
+      <div class="admin-card">
+        <div class="dashboard-grid">
+          <div class="chart-card"><h3>추천 과정 분포</h3><div class="bar-list" id="courseBars"></div></div>
+          <div class="chart-card"><h3>영역별 평균점수</h3><div class="bar-list" id="scoreBars"></div></div>
+          <div class="chart-card"><h3>연령대별 중급 추천 비율</h3><div class="bar-list" id="ageBars"></div></div>
+          <div class="chart-card"><h3>성별 평균점수</h3><div class="bar-list" id="genderBars"></div></div>
+          <div class="chart-card"><h3>가장 많이 사용하는 AI 도구</h3><div class="bar-list" id="toolBars"></div></div>
+          <div class="chart-card"><h3>가장 많이 사용하는 기능</h3><div class="bar-list" id="featureBars"></div></div>
+        </div>
+      </div>
 
-    const responseId = (crypto.randomUUID ? crypto.randomUUID() : 'R-' + Date.now() + '-' + Math.random().toString(36).slice(2,8));
-    const payload = {
-      responseId,
-      submittedAt: new Date().toISOString(),
-      participantName: document.getElementById('participantName').value.trim(),
-      department: document.getElementById('department').value.trim(),
-      employeeNo: document.getElementById('employeeNo').value.trim(),
-      courseGroup: document.getElementById('courseGroup').value.trim(),
-      totalScore: total,
-      recommendedCourse: level,
-      levelCode: total >= 55 && corePassed ? 'LEVEL 2' : 'LEVEL 1',
-      scores: {frequency, tools, features, work, plan, learning},
-      counts: {
-        toolCount: selectedTools.length,
-        advancedFeatureCount: advancedCount,
-        workAreaCount: selectedWork.length
-      },
-      coreConditions,
-      selections: {
-        tools: selectedLabels('tools'),
-        features: selectedLabels('features'),
-        work: selectedLabels('work')
-      },
-      userAgent: navigator.userAgent
-    };
+      <div class="admin-card">
+        <h2>응답 목록</h2>
+        <div class="filters">
+          <select id="filterAge"><option value="">전체 연령대</option></select>
+          <select id="filterGender"><option value="">전체 성별</option></select>
+          <select id="filterLevel"><option value="">전체 추천과정</option><option value="초급 과정 추천">초급</option><option value="초급 과정 추천 · 중급 준비 단계">중급 준비</option><option value="중급 과정 추천">중급</option></select>
+        </div>
+        <div class="table-wrap"><table><thead><tr>
+          <th>제출일시</th><th>성별</th><th>연령대</th><th>총점</th><th>추천과정</th>
+          <th>빈도</th><th>도구</th><th>기능</th><th>업무</th><th>유료</th><th>학습</th>
+        </tr></thead><tbody id="responseTable"></tbody></table></div>
+      </div>
+    </div>
+  </section>
 
-    result.style.display = 'block';
-    result.scrollIntoView({behavior:'smooth', block:'start'});
-    await sendToGoogleSheet(payload);
+  <footer>생성형 AI 역량진단 · 개인 수준 진단 및 조직 AI 활용 현황 분석</footer>
+</main>
 
-    window.__assessmentText = [
-      '[생성형 AI 역량진단 결과]',
-      `총점: ${total}/100`,
-      `추천 과정: ${level}`,
-      ...categories.map(([label, score, max]) => `${label}: ${score}/${max}`),
-      '',
-      ...reasons.map(r => `- ${r}`)
-    ].join('\n');
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+/* =========================================================
+   1. Firebase 콘솔의 웹 앱 설정값으로 교체하세요.
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID",
+  storageBucket: "PASTE_PROJECT_ID.firebasestorage.app",
+  messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
+  appId: "PASTE_APP_ID"
+};
+
+/* =========================================================
+   2. 기관명·진단 회차를 설정하세요.
+   surveyId를 바꾸면 관리자 화면에서 회차별 데이터가 분리됩니다.
+   ========================================================= */
+const APP_SETTINGS = {
+  organizationName: "용인도시공사",
+  surveyId: "yongin-ai-2026-01",
+  surveyName: "2026 생성형 AI 역량진단"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const RESPONSES = "ai_assessment_responses";
+
+const $ = (id)=>document.getElementById(id);
+const adminMode = new URLSearchParams(location.search).get("admin") === "1";
+$("heroTitle").textContent = adminMode ? `${APP_SETTINGS.organizationName} AI 활용 현황` : `${APP_SETTINGS.organizationName} 생성형 AI 역량진단`;
+$("heroDesc").textContent = adminMode
+  ? "구성원의 응답을 종합하여 조직의 AI 활용 수준, 주요 특성 및 교육 포인트를 확인합니다."
+  : "사용 빈도, 활용 도구, 기능 수준, 업무 활용 범위, 서비스 등급과 학습 경험을 종합하여 개인의 현재 수준과 적합한 교육과정을 안내합니다.";
+
+if(adminMode){
+  $("participantApp").classList.add("hidden");
+  $("adminApp").style.display="block";
+  $("adminTitle").textContent = `${APP_SETTINGS.organizationName} AI 활용 현황`;
+  $("surveyLabel").textContent = `${APP_SETTINGS.surveyName} · ${APP_SETTINGS.surveyId}`;
+}else{
+  $("participantApp").style.display="block";
+}
+
+function setupNoneLogic(name){
+  const checks=[...document.querySelectorAll(`input[name="${name}"]`)];
+  checks.forEach(c=>c.addEventListener("change",()=>{
+    const none=checks.find(x=>x.dataset.none===name);
+    if(c===none&&c.checked) checks.forEach(x=>{if(x!==none)x.checked=false});
+    else if(c!==none&&c.checked&&none) none.checked=false;
+  }));
+}
+["tools","features","work"].forEach(setupNoneLogic);
+
+function radioValue(name){
+  const el=document.querySelector(`input[name="${name}"]:checked`);
+  return el?Number(el.value):null;
+}
+function checked(name){return [...document.querySelectorAll(`input[name="${name}"]:checked`)]}
+function sumCapped(name,cap){return Math.min(cap,checked(name).reduce((s,e)=>s+Number(e.value),0))}
+function labels(name){
+  return checked(name).filter(x=>!x.dataset.none).map(x=>x.closest("label").innerText.trim().replace(/\s+/g," "));
+}
+function complete(){
+  return $("gender").value && $("ageGroup").value &&
+    ["frequency","plan","learning"].every(n=>radioValue(n)!==null) &&
+    ["tools","features","work"].every(n=>checked(n).length>0);
+}
+function percent(n,d){return d?Math.round((n/d)*100):0}
+function avg(arr,key){return arr.length?arr.reduce((s,x)=>s+Number(x[key]||0),0)/arr.length:0}
+function levelFrom(total,corePassed){
+  if(total>=55&&corePassed) return "중급 과정 추천";
+  if(total>=45) return "초급 과정 추천 · 중급 준비 단계";
+  return "초급 과정 추천";
+}
+
+$("assessmentForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  if(!complete()){
+    $("errorMessage").style.display="block";
+    $("errorMessage").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  $("errorMessage").style.display="none";
+
+  const frequency=radioValue("frequency");
+  const tools=sumCapped("tools",20);
+  const features=sumCapped("features",25);
+  const work=sumCapped("work",15);
+  const plan=radioValue("plan");
+  const learning=radioValue("learning");
+  const total=frequency+tools+features+work+plan+learning;
+
+  const selectedTools=labels("tools"), selectedFeatures=labels("features"), selectedWork=labels("work");
+  const advancedLabels=["심층 리서치","남들이 만든 GPTs 활용","NotebookLM 활용","Projects·프로젝트 기능","데이터·엑셀 분석","나만의 GPT·맞춤형 AI 제작","여러 AI를 연결한 업무 흐름 설계"];
+  const advancedCount=selectedFeatures.filter(v=>advancedLabels.some(a=>v.includes(a))).length;
+  const coreConditions={
+    frequency:frequency>=10,
+    tools:selectedTools.length>=2,
+    advanced:advancedCount>=2,
+    work:selectedWork.length>=3
+  };
+  const corePassed=Object.values(coreConditions).every(Boolean);
+  const level=levelFrom(total,corePassed);
+
+  let badgeClass="beginner",copy="";
+  if(level==="중급 과정 추천"){
+    badgeClass="intermediate";
+    copy="기본적인 생성형 AI 활용 경험이 충분합니다. 여러 AI 도구의 비교 활용, 고급 기능 및 업무 프로세스 적용을 중심으로 학습하는 것이 적합합니다.";
+  }else if(level.includes("준비")){
+    badgeClass="borderline";
+    copy="기본 활용 경험은 있으나 일부 핵심 기능과 업무 적용 경험을 보완하면 중급 과정을 더욱 효과적으로 따라갈 수 있습니다.";
+  }else{
+    copy="생성형 AI의 기본 원리와 프롬프트 작성법부터 문서·파일 분석과 자료조사 기능까지 단계적으로 학습하는 것이 적합합니다.";
+  }
+
+  $("totalScore").textContent=total;
+  $("scoreRing").style.setProperty("--score",total);
+  $("levelBadge").className=`badge ${badgeClass}`;
+  $("levelBadge").textContent=level==="중급 과정 추천"?"LEVEL 2":level.includes("준비")?"LEVEL 1.5":"LEVEL 1";
+  $("recommendation").textContent=level;
+  $("resultCopy").textContent=copy;
+
+  const categories=[
+    ["사용 빈도",frequency,20],["AI 도구",tools,20],["기능 수준",features,25],
+    ["업무 활용",work,15],["서비스 등급",plan,10],["학습 경험",learning,10]
+  ];
+  $("meters").innerHTML=categories.map(([l,s,m])=>`
+    <div class="meter-row"><div class="meter-label">${l}</div>
+    <div class="meter"><span style="width:${(s/m)*100}%"></span></div><div class="meter-score">${s}/${m}</div></div>`).join("");
+
+  const traits=[];
+  traits.push(frequency>=15?"생성형 AI를 비교적 자주 활용하고 있습니다.":frequency>=10?"생성형 AI를 정기적으로 활용하기 시작한 단계입니다.":"생성형 AI의 사용 빈도가 아직 높지 않습니다.");
+  traits.push(selectedTools.length>=3?`여러 AI 도구를 비교하여 활용한 경험이 있습니다.`:`활용 도구가 ${selectedTools.length}개로 특정 서비스에 집중되어 있습니다.`);
+  traits.push(advancedCount>=3?"심층 리서치, GPTs, NotebookLM 등 고급 기능 경험이 비교적 충분합니다.":"고급 기능 활용 경험을 확장할 여지가 있습니다.");
+  traits.push(selectedWork.length>=5?"다양한 업무 영역에 AI를 적용하고 있습니다.":`AI를 활용한 업무 영역은 ${selectedWork.length}개입니다.`);
+  $("personalTraits").innerHTML=traits.map(x=>`<li>${x}</li>`).join("");
+
+  const direction=[];
+  if(level==="중급 과정 추천"){
+    direction.push("여러 AI 도구의 강점을 비교하고 업무에 맞게 선택하는 역량을 확장해 보세요.");
+    direction.push("GPTs, NotebookLM, 심층 리서치와 데이터 분석 기능을 실제 업무 흐름에 연결해 보세요.");
+    direction.push("재사용 가능한 프롬프트와 AI 업무 프로세스를 구축해 보세요.");
+  }else if(level.includes("준비")){
+    direction.push("PDF 분석, 심층 리서치, NotebookLM 등 핵심 기능을 체계적으로 정리해 보세요.");
+    direction.push("보고서·기획서·데이터 분석 등 실제 업무 적용 경험을 늘려보세요.");
+    direction.push("기초 내용을 숙지했다면 중급 과정도 선택할 수 있습니다.");
+  }else{
+    direction.push("프롬프트 작성과 생성형 AI의 기본 사용법부터 익혀보세요.");
+    direction.push("문서 업로드, 웹 검색, PDF 분석 등 기본 기능을 단계적으로 실습해 보세요.");
+    direction.push("일상적인 업무 한두 가지부터 AI를 반복 적용해 보세요.");
+  }
+  $("learningDirection").innerHTML=direction.map(x=>`<li>${x}</li>`).join("");
+
+  $("result").style.display="block";
+  $("result").scrollIntoView({behavior:"smooth",block:"start"});
+
+  const payload={
+    surveyId:APP_SETTINGS.surveyId,
+    surveyName:APP_SETTINGS.surveyName,
+    organizationName:APP_SETTINGS.organizationName,
+    submittedAt:serverTimestamp(),
+    clientSubmittedAt:new Date().toISOString(),
+    gender:$("gender").value,
+    ageGroup:$("ageGroup").value,
+    totalScore:total,
+    recommendedCourse:level,
+    levelCode:level==="중급 과정 추천"?"LEVEL 2":level.includes("준비")?"LEVEL 1.5":"LEVEL 1",
+    scores:{frequency,tools,features,work,plan,learning},
+    counts:{toolCount:selectedTools.length,advancedFeatureCount:advancedCount,workAreaCount:selectedWork.length},
+    coreConditions,
+    selections:{tools:selectedTools,features:selectedFeatures,work:selectedWork}
+  };
+
+  const status=$("saveStatus");
+  status.className="status saving";status.textContent="진단 결과를 저장하고 있습니다…";
+  try{
+    await addDoc(collection(db,RESPONSES),payload);
+    status.className="status success";status.textContent="진단 결과가 정상적으로 저장되었습니다.";
+  }catch(err){
+    console.error(err);
+    status.className="status fail";status.textContent="개인 결과는 확인할 수 있지만 서버 저장에 실패했습니다. 관리자에게 문의해 주세요.";
+  }
+
+  window.__assessmentText=[
+    `[${APP_SETTINGS.organizationName} 생성형 AI 역량진단 결과]`,
+    `총점: ${total}/100`,`추천 과정: ${level}`,
+    ...categories.map(([l,s,m])=>`${l}: ${s}/${m}`),"",
+    "[현재 활용 특성]",...traits.map(x=>`- ${x}`),"",
+    "[추천 학습 방향]",...direction.map(x=>`- ${x}`)
+  ].join("\n");
+});
+
+$("resetBtn").addEventListener("click",()=>{
+  $("assessmentForm").reset();$("result").style.display="none";$("errorMessage").style.display="none";
+  $("saveStatus").className="status";window.scrollTo({top:0,behavior:"smooth"});
+});
+$("copyBtn").addEventListener("click",async()=>{
+  try{
+    await navigator.clipboard.writeText(window.__assessmentText||"");
+    const b=$("copyBtn"),o=b.textContent;b.textContent="복사 완료";setTimeout(()=>b.textContent=o,1400);
+  }catch{alert("복사에 실패했습니다.");}
+});
+
+/* 관리자 */
+let allResponses=[];
+
+$("loginBtn").addEventListener("click",async()=>{
+  $("loginError").style.display="none";
+  try{
+    await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);
+  }catch(err){
+    $("loginError").textContent="로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.";
+    $("loginError").style.display="block";
+  }
+});
+$("logoutBtn").addEventListener("click",()=>signOut(auth));
+$("refreshBtn").addEventListener("click",loadAdminData);
+
+onAuthStateChanged(auth,user=>{
+  if(!adminMode)return;
+  if(user){
+    $("adminLogin").classList.add("hidden");
+    $("adminDashboard").classList.remove("hidden");
+    loadAdminData();
+  }else{
+    $("adminLogin").classList.remove("hidden");
+    $("adminDashboard").classList.add("hidden");
+  }
+});
+
+async function loadAdminData(){
+  $("orgSummaryText").textContent="응답 데이터를 불러오는 중입니다…";
+  try{
+    const q=query(collection(db,RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId),orderBy("submittedAt","desc"));
+    const snap=await getDocs(q);
+    allResponses=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDashboard(allResponses);
+  }catch(err){
+    console.error(err);
+    $("orgSummaryText").textContent="데이터를 불러오지 못했습니다. Firestore 보안 규칙과 색인 설정을 확인해 주세요.";
+  }
+}
+function countMap(items,extractor){
+  const m={};items.forEach(x=>{const vals=extractor(x);(Array.isArray(vals)?vals:[vals]).filter(Boolean).forEach(v=>m[v]=(m[v]||0)+1)});return m;
+}
+function renderBars(id,map,total,limit=10,suffix="%"){
+  const rows=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,limit);
+  $(id).innerHTML=rows.length?rows.map(([k,v])=>{
+    const p=total?percent(v,total):Math.round(v);
+    return `<div class="bar-item"><div class="bar-name" title="${k}">${k}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(p,100)}%"></div></div><div class="bar-value">${p}${suffix}</div></div>`;
+  }).join(""):`<div class="empty">응답이 없습니다.</div>`;
+}
+function renderDashboard(data){
+  const n=data.length;
+  const average=n?Math.round(avg(data,"totalScore")*10)/10:0;
+  const beginner=data.filter(x=>x.recommendedCourse==="초급 과정 추천").length;
+  const ready=data.filter(x=>String(x.recommendedCourse).includes("준비")).length;
+  const intermediate=data.filter(x=>x.recommendedCourse==="중급 과정 추천").length;
+  const paid=data.filter(x=>Number(x.scores?.plan||0)>0).length;
+  $("kpiGrid").innerHTML=[
+    ["참여 인원",`${n}명`],["평균점수",`${average}점`],["초급 추천",`${percent(beginner,n)}%`],
+    ["중급 준비",`${percent(ready,n)}%`],["중급 추천",`${percent(intermediate,n)}%`],
+    ["유료 이용",`${percent(paid,n)}%`]
+  ].map(([l,v])=>`<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div></div>`).join("");
+
+  const courseMap=countMap(data,x=>x.recommendedCourse);
+  renderBars("courseBars",courseMap,n);
+
+  const scoreMax={frequency:20,tools:20,features:25,work:15,plan:10,learning:10};
+  const labelsMap={frequency:"사용 빈도",tools:"AI 도구",features:"기능 수준",work:"업무 활용",plan:"서비스 등급",learning:"학습 경험"};
+  const scorePct={};
+  Object.keys(scoreMax).forEach(k=>{
+    scorePct[labelsMap[k]]=n?Math.round((data.reduce((s,x)=>s+Number(x.scores?.[k]||0),0)/(n*scoreMax[k]))*100):0;
   });
+  renderBars("scoreBars",scorePct,0,10,"%");
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    form.reset();
-    result.style.display = 'none';
-    errorMessage.style.display = 'none';
-    const status = document.getElementById('submitStatus');
-    status.className = 'submit-status';
-    status.textContent = '';
-    window.scrollTo({top:0, behavior:'smooth'});
+  const ageGroups=["20대 이하","30대","40대","50대","60대 이상"];
+  const ageRate={};
+  ageGroups.forEach(a=>{
+    const arr=data.filter(x=>x.ageGroup===a);
+    ageRate[a]=arr.length?percent(arr.filter(x=>x.recommendedCourse==="중급 과정 추천").length,arr.length):0;
   });
+  renderBars("ageBars",ageRate,0,10,"%");
 
-  document.getElementById('copyBtn').addEventListener('click', async () => {
-    try{
-      await navigator.clipboard.writeText(window.__assessmentText || '');
-      const btn = document.getElementById('copyBtn');
-      const original = btn.textContent;
-      btn.textContent = '복사 완료';
-      setTimeout(() => btn.textContent = original, 1400);
-    }catch(e){
-      alert('복사에 실패했습니다. 브라우저 권한을 확인해 주세요.');
-    }
+  const genders=["남성","여성","응답하지 않음"];
+  const genderAvg={};
+  genders.forEach(g=>{
+    const arr=data.filter(x=>x.gender===g);
+    if(arr.length)genderAvg[g]=Math.round(avg(arr,"totalScore"));
   });
+  renderBars("genderBars",genderAvg,0,10,"점");
+
+  const toolMap=countMap(data,x=>x.selections?.tools||[]);
+  const featureMap=countMap(data,x=>x.selections?.features||[]);
+  renderBars("toolBars",toolMap,n,8,"%");
+  renderBars("featureBars",featureMap,n,8,"%");
+
+  $("orgSummaryText").textContent=buildOrgSummary(data,average,paid,n,toolMap,featureMap,intermediate);
+
+  const ages=[...new Set(data.map(x=>x.ageGroup).filter(Boolean))];
+  const gendersSet=[...new Set(data.map(x=>x.gender).filter(Boolean))];
+  $("filterAge").innerHTML='<option value="">전체 연령대</option>'+ages.map(x=>`<option>${x}</option>`).join("");
+  $("filterGender").innerHTML='<option value="">전체 성별</option>'+gendersSet.map(x=>`<option>${x}</option>`).join("");
+  renderTable(data);
+}
+function buildOrgSummary(data,average,paid,n,toolMap,featureMap,intermediate){
+  if(!n)return "아직 수집된 응답이 없습니다.";
+  const topTool=Object.entries(toolMap).sort((a,b)=>b[1]-a[1])[0]?.[0]||"특정 도구";
+  const topFeature=Object.entries(featureMap).sort((a,b)=>b[1]-a[1])[0]?.[0]||"기본 기능";
+  const advNames=["심층 리서치","남들이 만든 GPTs 활용","NotebookLM 활용","Projects·프로젝트 기능","데이터·엑셀 분석","나만의 GPT·맞춤형 AI 제작","여러 AI를 연결한 업무 흐름 설계"];
+  const advUsage=data.reduce((s,x)=>s+(x.selections?.features||[]).filter(v=>advNames.some(a=>v.includes(a))).length,0)/n;
+  const stage=average<31?"관심 단계":average<56?"도입 단계":average<76?"성장 단계":"혁신 단계";
+  let text=`현재 조직의 평균 AI 활용점수는 ${average}점으로, 조직 성숙도는 '${stage}'에 해당합니다. `;
+  text+=`${topTool} 활용 비중이 가장 높고, 가장 많이 사용하는 기능은 ${topFeature}입니다. `;
+  text+=`중급 과정 추천 비율은 ${percent(intermediate,n)}%, 유료 서비스 이용 비율은 ${percent(paid,n)}%입니다. `;
+  text+=advUsage<1.5
+    ?"고급 기능 활용이 아직 제한적이므로 리더십 교육에서는 개인 단위 활용을 조직 차원의 표준 업무방식으로 전환하는 과제를 강조하는 것이 좋습니다."
+    :"고급 기능 활용이 일부 확산되고 있으므로 리더십 교육에서는 활용 사례 공유, 보안 기준, 업무 프로세스 재설계와 조직 확산 전략을 강조하는 것이 좋습니다.";
+  return text;
+}
+function renderTable(data){
+  const age=$("filterAge").value,gender=$("filterGender").value,level=$("filterLevel").value;
+  const arr=data.filter(x=>(!age||x.ageGroup===age)&&(!gender||x.gender===gender)&&(!level||x.recommendedCourse===level));
+  $("responseTable").innerHTML=arr.length?arr.map(x=>{
+    const dt=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.clientSubmittedAt||Date.now());
+    return `<tr><td>${dt.toLocaleString("ko-KR")}</td><td>${x.gender||""}</td><td>${x.ageGroup||""}</td>
+      <td class="numc">${x.totalScore||0}</td><td>${x.recommendedCourse||""}</td>
+      <td class="numc">${x.scores?.frequency||0}</td><td class="numc">${x.scores?.tools||0}</td>
+      <td class="numc">${x.scores?.features||0}</td><td class="numc">${x.scores?.work||0}</td>
+      <td class="numc">${x.scores?.plan||0}</td><td class="numc">${x.scores?.learning||0}</td></tr>`;
+  }).join(""):`<tr><td colspan="11" class="empty">조건에 맞는 응답이 없습니다.</td></tr>`;
+}
+["filterAge","filterGender","filterLevel"].forEach(id=>$(id).addEventListener("change",()=>renderTable(allResponses)));
+
+$("csvBtn").addEventListener("click",()=>{
+  if(!allResponses.length)return alert("다운로드할 응답이 없습니다.");
+  const rows=[["제출일시","성별","연령대","총점","추천과정","사용빈도","AI도구","기능수준","업무활용","서비스등급","학습경험","선택도구","선택기능","선택업무"]];
+  allResponses.forEach(x=>{
+    const dt=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.clientSubmittedAt||Date.now());
+    rows.push([dt.toLocaleString("ko-KR"),x.gender,x.ageGroup,x.totalScore,x.recommendedCourse,
+      x.scores?.frequency,x.scores?.tools,x.scores?.features,x.scores?.work,x.scores?.plan,x.scores?.learning,
+      (x.selections?.tools||[]).join(" | "),(x.selections?.features||[]).join(" | "),(x.selections?.work||[]).join(" | ")]);
+  });
+  const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`${APP_SETTINGS.surveyId}_AI진단결과.csv`;a.click();URL.revokeObjectURL(url);
+});
 </script>
 </body>
 </html>
