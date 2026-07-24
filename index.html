@@ -100,7 +100,6 @@ button{border:0;border-radius:14px;padding:14px 20px;font-weight:900;cursor:poin
 .hidden{display:none!important}
 
 /* 관리자 */
-#adminApp{display:none}
 .admin-login{max-width:520px;margin:32px auto 0}
 .admin-card{padding:24px;margin-top:20px}
 .admin-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
@@ -404,7 +403,7 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 /* =========================================================
    1. Firebase 콘솔의 웹 앱 설정값으로 교체하세요.
@@ -432,6 +431,7 @@ const APP_SETTINGS = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence).catch(console.error);
 const RESPONSES = "ai_assessment_responses";
 
 const $ = (id)=>document.getElementById(id);
@@ -467,8 +467,14 @@ function showAdminView(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 $("adminEntryBtn").addEventListener("click",()=>{
-  if(auth.currentUser) showAdminView();
-  else openAdminLogin();
+  const adminVisible = !$("adminApp").classList.contains("hidden");
+  if(adminVisible){
+    showParticipantView();
+  }else if(auth.currentUser){
+    showAdminView();
+  }else{
+    openAdminLogin();
+  }
 });
 $("modalCloseBtn").addEventListener("click",closeAdminLogin);
 $("adminLoginModal").addEventListener("click",(e)=>{
@@ -645,6 +651,8 @@ $("loginBtn").addEventListener("click",async()=>{
   $("loginError").style.display="none";
   try{
     await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);
+    showAdminView();
+    await loadAdminData();
   }catch(err){
     console.error(err);
     $("loginError").textContent="로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.";
@@ -673,13 +681,17 @@ onAuthStateChanged(auth,user=>{
 async function loadAdminData(){
   $("orgSummaryText").textContent="응답 데이터를 불러오는 중입니다…";
   try{
-    const q=query(collection(db,RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId),orderBy("submittedAt","desc"));
+    const q=query(collection(db,RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId));
     const snap=await getDocs(q);
-    allResponses=snap.docs.map(d=>({id:d.id,...d.data()}));
+    allResponses=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const at=a.submittedAt?.toMillis?.() ?? 0;
+      const bt=b.submittedAt?.toMillis?.() ?? 0;
+      return bt-at;
+    });
     renderDashboard(allResponses);
   }catch(err){
     console.error(err);
-    $("orgSummaryText").textContent="데이터를 불러오지 못했습니다. Firestore 보안 규칙과 색인 설정을 확인해 주세요.";
+    $("orgSummaryText").textContent=`데이터를 불러오지 못했습니다: ${err.code || err.message}. Firestore 규칙과 컬렉션 이름을 확인해 주세요.`;
   }
 }
 function countMap(items,extractor){
