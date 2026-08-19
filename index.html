@@ -159,6 +159,36 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
   padding:14px 16px;background:#eef3ff;border:1px solid #dbe5ff;border-radius:16px
 }
 .admin-view-header strong{color:#264eae}
+.mode-nav{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+.mode-btn{flex:1;min-width:180px;border:1px solid #cfd9ea;background:#fff;color:#334155;box-shadow:0 8px 22px rgba(32,56,117,.05)}
+.mode-btn.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--primary),var(--primary2))}
+.pre-code-card{background:linear-gradient(135deg,#102b6f,#315fce);color:#fff;border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.pre-code-label{font-size:13px;font-weight:900;letter-spacing:.08em;color:#c9d8ff}
+.pre-code{font-size:clamp(26px,5vw,42px);font-weight:950;letter-spacing:.06em;margin:8px 0 3px;word-break:break-all}
+.pre-code-help{margin:0;color:#e7edff;font-size:14px}
+.code-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.code-actions button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);padding:10px 14px}
+.code-actions button:hover{background:rgba(255,255,255,.24)}
+.saved-code-box{margin-top:18px;padding-top:17px;border-top:1px solid rgba(255,255,255,.24)}
+.saved-code-box label{display:block;margin-bottom:7px;color:#fff;font-size:14px;font-weight:850}
+.saved-code-row{display:flex;gap:8px}
+.saved-code-row input{flex:1;min-width:0;border:1px solid rgba(255,255,255,.38);border-radius:12px;padding:11px 13px;background:rgba(255,255,255,.96);color:#172033;font-weight:800;text-transform:uppercase;outline:none}
+.saved-code-row input:focus{box-shadow:0 0 0 3px rgba(255,255,255,.22)}
+.saved-code-row button{white-space:nowrap;background:#fff;color:#1746a2;padding:11px 15px}
+.saved-code-status{min-height:22px;margin-top:7px;color:#dce7ff;font-size:13px;font-weight:750}
+.likert{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.likert .choice{display:block;text-align:center;padding:12px 7px;font-size:13px;line-height:1.4}
+.likert input{display:block;margin:0 auto 7px}
+.scale-note{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 20px;padding:14px;background:#f7f9fc;border:1px solid var(--line);border-radius:14px}
+.scale-note span{text-align:center;color:#475569;font-size:12px;line-height:1.4}
+.pre-question{padding:22px 0;border-top:1px solid #edf1f6}
+.pre-question:first-of-type{border-top:0}
+.pre-question h3{margin:0 0 12px;font-size:17px}
+.pre-done{display:none;text-align:center;padding:36px 20px}
+.pre-done .done-icon{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:#eaf8f3;color:#087a53;font-size:32px;font-weight:950}
+.pre-admin-table table{min-width:760px}
+.delta-up{color:#087a53;font-weight:900}.delta-down{color:#b42318;font-weight:900}.delta-flat{color:#64748b;font-weight:900}
+.comparison-table table{min-width:1500px}
 
 @media(max-width:820px){
   .grid2,.grid3,.demographic-grid,.insight-grid,.dashboard-grid{grid-template-columns:1fr}
@@ -170,6 +200,8 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
   .wrap{padding:18px 12px 60px}.hero{padding:28px 22px}.section,#result,.admin-card{padding:20px}
   .meter-row{grid-template-columns:105px 1fr 46px}.kpi-grid{grid-template-columns:1fr 1fr}
   .primary{min-width:0;flex:1}.recommendation{font-size:24px}
+  .likert{grid-template-columns:1fr}.likert .choice{display:flex;text-align:left;align-items:center}.likert input{margin:4px 10px 0 0}.scale-note{display:none}
+  .saved-code-row{display:grid}.saved-code-row button{width:100%}
 }
 @media print{
   body{background:#fff}.hero,.notice,form,.actionbar,footer,#adminApp,.modal{display:none!important}
@@ -185,6 +217,13 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
     <p id="heroDesc">사용 빈도, 활용 도구, 기능 수준, 업무 활용 범위, 서비스 등급과 학습 경험을 종합하여 개인의 현재 수준과 적합한 교육과정을 안내합니다.</p>
     <button type="button" class="admin-entry" id="adminEntryBtn">관리자</button>
   </section>
+
+  <nav class="mode-nav" id="modeNav" aria-label="진단 선택">
+    <button type="button" class="mode-btn active" id="assessmentModeBtn">AI 역량진단</button>
+    <button type="button" class="mode-btn" id="preSurveyModeBtn">교육 사전설문</button>
+    <button type="button" class="mode-btn" id="postSurveyModeBtn">교육 사후설문</button>
+    <button type="button" class="mode-btn" id="followupSurveyModeBtn">교육 2주 후 설문</button>
+  </nav>
 
   <section id="participantApp">
     <div class="notice">
@@ -334,6 +373,142 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
     </section>
   </section>
 
+  <section id="preSurveyApp" class="hidden">
+    <div class="notice">
+      <strong>무기명 사전설문 안내</strong><br>
+      이름·사번·연락처는 수집하지 않습니다. 교육 전후의 변화만 연결하기 위해 무작위 익명코드를 사용합니다. 현재 혼자 수행할 수 있는 수준을 기준으로 응답해 주세요.
+    </div>
+
+    <div class="pre-code-card">
+      <div class="pre-code-label">나의 익명 평가코드</div>
+      <div class="pre-code" id="anonymousCodeText">[AI교육설문]코드 미발급</div>
+      <p class="pre-code-help">아래 발급 버튼을 누르면 개인별 무작위 코드가 생성됩니다. 교육 직후와 2주 후 설문에 필요하므로 개인톡이나 메모장에 저장해 주세요.</p>
+      <div class="code-actions">
+        <button type="button" id="issueCodeBtn">익명코드 발급받기</button>
+        <button type="button" id="copyCodeBtn">코드 복사하기</button>
+      </div>
+      <div class="saved-code-box">
+        <label for="savedCodeInput">이전에 저장해 둔 코드가 있나요?</label>
+        <div class="saved-code-row">
+          <input id="savedCodeInput" type="text" inputmode="text" autocomplete="off" maxlength="16" placeholder="[AI교육설문]6X2D5X">
+          <button type="button" id="applySavedCodeBtn">이 코드 사용하기</button>
+        </div>
+        <div class="saved-code-status" id="savedCodeStatus">전체 코드를 붙여넣거나 6자리 코드만 입력해도 됩니다.</div>
+      </div>
+    </div>
+
+    <form id="preSurveyForm">
+      <section class="section">
+        <div class="section-head"><div class="num">10</div><div><h2>AI 업무활용역량</h2><p class="desc">현재 각 항목을 어느 정도 수행할 수 있는지 선택해 주세요.</p></div></div>
+        <div class="scale-note">
+          <span><b>1점</b><br>전혀 수행 못함</span><span><b>2점</b><br>설명·도움 필요</span><span><b>3점</b><br>기본 수준 가능</span><span><b>4점</b><br>대부분 스스로 가능</span><span><b>5점</b><br>능숙하게 수행</span>
+        </div>
+        <div id="preQuestions"></div>
+        <div id="preError" class="error">응답하지 않은 문항이 있습니다. 10개 문항에 모두 응답해 주세요.</div>
+        <div id="preSaveStatus" class="status"></div>
+        <div class="actionbar" style="position:static;margin-top:20px">
+          <button type="submit" class="primary">사전설문 제출하기</button>
+        </div>
+      </section>
+    </form>
+
+    <section class="section pre-done" id="preDone">
+      <div class="done-icon">✓</div>
+      <h2>사전설문이 완료되었습니다</h2>
+      <p class="desc">교육 직후와 2주 후 설문에서도 같은 익명코드를 사용해 주세요.</p>
+      <div class="pre-code" id="completedCode" style="color:var(--primary);font-size:28px"></div>
+      <button type="button" class="primary" id="copyCompletedCodeBtn" style="margin-top:16px">코드 다시 복사하기</button>
+    </section>
+  </section>
+
+  <section id="postSurveyApp" class="hidden">
+    <div class="notice">
+      <strong>무기명 사후설문 안내</strong><br>
+      사전설문에서 사용한 익명코드와 동일한 코드를 사용해야 교육 전후 변화가 연결됩니다. 같은 스마트폰이면 저장된 코드가 자동으로 표시되며, 다른 기기에서는 개인톡이나 메모장에 저장한 코드를 붙여넣어 주세요.
+    </div>
+
+    <div class="pre-code-card">
+      <div class="pre-code-label">현재 적용된 익명 평가코드</div>
+      <div class="pre-code" id="postCodeText">[AI교육설문]코드 미입력</div>
+      <p class="pre-code-help">위 코드가 사전설문 때 사용한 코드와 같은지 반드시 확인해 주세요.</p>
+      <div class="saved-code-box" style="border-top:0;padding-top:7px">
+        <label for="postSavedCodeInput">저장해 둔 사전설문 코드를 붙여넣어 주세요</label>
+        <div class="saved-code-row">
+          <input id="postSavedCodeInput" type="text" inputmode="text" autocomplete="off" maxlength="16" placeholder="[AI교육설문]6X2D5X">
+          <button type="button" id="applyPostSavedCodeBtn">이 코드 사용하기</button>
+        </div>
+        <div class="saved-code-status" id="postSavedCodeStatus">전체 코드를 붙여넣거나 6자리 코드만 입력해도 됩니다.</div>
+        <button type="button" class="danger-btn" id="lostPostCodeBtn" style="margin-top:10px">기존 코드를 잊어버렸습니다</button>
+      </div>
+    </div>
+
+    <form id="postSurveyForm">
+      <section class="section">
+        <div class="section-head"><div class="num">10</div><div><h2>AI 업무활용역량</h2><p class="desc">교육을 마친 현재 각 항목을 어느 정도 수행할 수 있는지 선택해 주세요.</p></div></div>
+        <div class="scale-note">
+          <span><b>1점</b><br>전혀 수행 못함</span><span><b>2점</b><br>설명·도움 필요</span><span><b>3점</b><br>기본 수준 가능</span><span><b>4점</b><br>대부분 스스로 가능</span><span><b>5점</b><br>능숙하게 수행</span>
+        </div>
+        <div id="postQuestions"></div>
+        <div id="postError" class="error">응답하지 않은 문항이 있습니다. 10개 문항에 모두 응답해 주세요.</div>
+        <div id="postSaveStatus" class="status"></div>
+        <div class="actionbar" style="position:static;margin-top:20px">
+          <button type="submit" class="primary">사후설문 제출하기</button>
+        </div>
+      </section>
+    </form>
+
+    <section class="section pre-done" id="postDone">
+      <div class="done-icon">✓</div>
+      <h2>사후설문이 완료되었습니다</h2>
+      <p class="desc">사전설문과 동일한 코드로 결과가 저장되었습니다.</p>
+      <div class="pre-code" id="postCompletedCode" style="color:var(--primary);font-size:28px"></div>
+    </section>
+  </section>
+
+  <section id="followupSurveyApp" class="hidden">
+    <div class="notice">
+      <strong>교육 2주 후 무기명 설문 안내</strong><br>
+      교육효과가 유지되고 있는지 확인하기 위한 설문입니다. 사전·사후설문에서 사용한 것과 동일한 익명코드를 입력해야 세 시점의 변화가 연결됩니다.
+    </div>
+
+    <div class="pre-code-card">
+      <div class="pre-code-label">현재 적용된 익명 평가코드</div>
+      <div class="pre-code" id="followupCodeText">[AI교육설문]코드 미입력</div>
+      <p class="pre-code-help">개인톡이나 메모장에서 <b>[AI교육설문]</b>을 검색해 저장한 코드를 찾아 입력해 주세요.</p>
+      <div class="saved-code-box" style="border-top:0;padding-top:7px">
+        <label for="followupSavedCodeInput">저장해 둔 설문 코드를 붙여넣어 주세요</label>
+        <div class="saved-code-row">
+          <input id="followupSavedCodeInput" type="text" inputmode="text" autocomplete="off" maxlength="16" placeholder="[AI교육설문]6X2D5X">
+          <button type="button" id="applyFollowupSavedCodeBtn">이 코드 사용하기</button>
+        </div>
+        <div class="saved-code-status" id="followupSavedCodeStatus">전체 코드를 붙여넣거나 6자리 코드만 입력해도 됩니다.</div>
+        <button type="button" class="danger-btn" id="lostFollowupCodeBtn" style="margin-top:10px">기존 코드를 잊어버렸습니다</button>
+      </div>
+    </div>
+
+    <form id="followupSurveyForm">
+      <section class="section">
+        <div class="section-head"><div class="num">10</div><div><h2>AI 업무활용역량</h2><p class="desc">교육 2주 후 현재 각 항목을 어느 정도 수행할 수 있는지 선택해 주세요.</p></div></div>
+        <div class="scale-note">
+          <span><b>1점</b><br>전혀 수행 못함</span><span><b>2점</b><br>설명·도움 필요</span><span><b>3점</b><br>기본 수준 가능</span><span><b>4점</b><br>대부분 스스로 가능</span><span><b>5점</b><br>능숙하게 수행</span>
+        </div>
+        <div id="followupQuestions"></div>
+        <div id="followupError" class="error">응답하지 않은 문항이 있습니다. 10개 문항에 모두 응답해 주세요.</div>
+        <div id="followupSaveStatus" class="status"></div>
+        <div class="actionbar" style="position:static;margin-top:20px">
+          <button type="submit" class="primary">2주 후 설문 제출하기</button>
+        </div>
+      </section>
+    </form>
+
+    <section class="section pre-done" id="followupDone">
+      <div class="done-icon">✓</div>
+      <h2>2주 후 설문이 완료되었습니다</h2>
+      <p class="desc">사전·사후설문과 동일한 코드로 결과가 저장되었습니다.</p>
+      <div class="pre-code" id="followupCompletedCode" style="color:var(--primary);font-size:28px"></div>
+    </section>
+  </section>
+
   <section id="adminApp" class="hidden">
     <div class="admin-view-header"><strong>관리자 모드</strong><span>조직 진단 결과를 확인하고 있습니다.</span></div>
     <div id="adminDashboard">
@@ -380,6 +555,50 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
           <th>빈도</th><th>도구</th><th>기능</th><th>업무</th><th>유료</th><th>학습</th>
         </tr></thead><tbody id="responseTable"></tbody></table></div>
       </div>
+
+      <div class="admin-card">
+        <div class="admin-toolbar">
+          <div><h2>교육 사전설문 누적결과</h2><p class="desc">무기명 익명코드로 저장된 AI 업무활용역량 응답입니다.</p></div>
+          <div class="admin-actions">
+            <button class="secondary" id="refreshPreBtn">새로고침</button>
+            <button class="secondary" id="preCsvBtn">사전설문 CSV</button>
+            <button class="danger-btn" id="deletePreBtn">사전 삭제</button>
+            <button class="danger-btn" id="deletePostBtn">사후 삭제</button>
+            <button class="danger-btn" id="deleteFollowupBtn">2주 후 삭제</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="preKpiGrid"></div>
+        <div class="chart-card" style="margin-top:18px"><h3>문항별 평균점수</h3><div class="bar-list" id="preQuestionBars"></div></div>
+        <div class="table-wrap pre-admin-table" style="margin-top:18px"><table><thead><tr>
+          <th>제출일시</th><th>익명코드</th><th>평균</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th><th>Q10</th>
+        </tr></thead><tbody id="preResponseTable"></tbody></table></div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-toolbar">
+          <div><h2>2주 후 설문 원본 응답</h2><p class="desc">사전응답과 연결되지 않은 제출도 포함한 전체 2주 후 설문 데이터입니다.</p></div>
+          <div class="admin-actions">
+            <button class="secondary" id="followupRefreshBtn">새로고침</button>
+            <button class="secondary" id="followupCsvBtn">2주 후 CSV</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="followupKpiGrid"></div>
+        <div class="table-wrap pre-admin-table" style="margin-top:18px"><table><thead><tr>
+          <th>제출일시</th><th>익명코드</th><th>평균</th><th>연결상태</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th><th>Q10</th>
+        </tr></thead><tbody id="followupResponseTable"></tbody></table></div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-toolbar">
+          <div><h2>사전·사후·2주 후 변화 비교</h2><p class="desc">동일한 익명코드의 각 시점별 가장 최근 응답을 연결하여 비교합니다.</p></div>
+          <div class="admin-actions"><button class="secondary" id="comparisonCsvBtn">3시점 변화 CSV</button></div>
+        </div>
+        <div class="kpi-grid" id="comparisonKpiGrid"></div>
+        <div class="table-wrap comparison-table" style="margin-top:18px"><table><thead><tr>
+          <th>익명코드</th><th>사전일시</th><th>사후일시</th><th>2주 후 일시</th><th>사전평균</th><th>사후평균</th><th>2주 후 평균</th><th>사전→사후</th><th>사후→2주</th><th>사전→2주</th>
+          <th>Q1 변화</th><th>Q2 변화</th><th>Q3 변화</th><th>Q4 변화</th><th>Q5 변화</th><th>Q6 변화</th><th>Q7 변화</th><th>Q8 변화</th><th>Q9 변화</th><th>Q10 변화</th>
+        </tr></thead><tbody id="comparisonTable"></tbody></table></div>
+      </div>
     </div>
   </section>
 
@@ -401,6 +620,20 @@ footer{text-align:center;color:#94a3b8;margin-top:28px;font-size:13px}
     </div>
     <div id="loginError" class="error"></div>
     <button id="loginBtn" class="primary" style="width:100%;margin-top:16px">관리자 화면 열기</button>
+  </div>
+</div>
+
+<div id="surveyAccessModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="surveyAccessTitle">
+  <div class="modal-card">
+    <button type="button" class="modal-close" id="surveyAccessCloseBtn" aria-label="닫기">×</button>
+    <h2 id="surveyAccessTitle" style="margin:0">설문 비밀번호 입력</h2>
+    <p class="desc" id="surveyAccessDesc">안내받은 설문 비밀번호를 입력해 주세요.</p>
+    <div class="field" style="margin-top:18px">
+      <label for="surveyAccessPassword">비밀번호</label>
+      <input id="surveyAccessPassword" type="password" inputmode="text" autocomplete="off">
+    </div>
+    <div id="surveyAccessError" class="error"></div>
+    <button id="surveyAccessConfirmBtn" class="primary" style="width:100%;margin-top:16px">설문 들어가기</button>
   </div>
 </div>
 
@@ -429,7 +662,10 @@ const firebaseConfig = {
 const APP_SETTINGS = {
   organizationName: "용인도시공사",
   surveyId: "yongin-ai-2026-01",
-  surveyName: "2026 생성형 AI 역량진단"
+  surveyName: "2026 생성형 AI 역량진단",
+  preSurveyPasswordHash: "d28af2e9161c322f0083d72837b2c6e3f3d987d80584d47589afaa2b3675f184",
+  postSurveyPasswordHash: "49cf33d1fef295e5c74a9b01f29e4eeea52aaf0978b9da621d2fdc240221b3c0",
+  followupSurveyPasswordHash: "b4c78f3c6c69df1f7a9af7a14025edf860cdef8aebd2f9d1bd85aa0cc561d161"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -437,6 +673,26 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 const RESPONSES = "ai_assessment_responses";
+// 기존에 허용된 응답 컬렉션을 함께 사용하고 assessmentStage로 설문 종류를 분리합니다.
+const PRE_RESPONSES = RESPONSES;
+const PRE_SURVEY_STAGE = "pre";
+const POST_SURVEY_STAGE = "post";
+const FOLLOWUP_SURVEY_STAGE = "followup_2w";
+
+const PRE_QUESTIONS = [
+  "생성형 AI의 주요 기능과 업무 활용방법을 설명할 수 있다.",
+  "내 업무에서 생성형 AI를 활용할 수 있는 업무를 찾을 수 있다.",
+  "업무의 목적과 요청사항을 포함하여 AI에게 구체적으로 지시할 수 있다.",
+  "원하는 결과물의 형식, 분량, 표현방식을 지정하여 요청할 수 있다.",
+  "AI의 첫 번째 답변이 부족할 때 추가 질문을 통해 결과를 개선할 수 있다.",
+  "생성형 AI를 활용하여 긴 자료의 핵심 내용을 요약하고 정리할 수 있다.",
+  "생성형 AI를 활용하여 보고서, 이메일, 안내문 등 업무문서의 초안을 작성할 수 있다.",
+  "AI가 생성한 결과를 내 업무의 목적과 상황에 맞게 수정할 수 있다.",
+  "AI가 제공한 정보를 그대로 사용하지 않고 중요한 사실이나 수치를 확인할 수 있다.",
+  "개인정보와 업무상 민감정보를 제외하고 생성형 AI를 안전하게 활용할 수 있다."
+];
+const PRE_SCALE = ["전혀 수행할 수 없다","설명이나 도움이 필요하다","기본 수준에서는 수행할 수 있다","대부분 스스로 수행할 수 있다","능숙하게 수행할 수 있다"];
+const CODE_STORAGE_KEY = "aiTrainingSurveyAnonymousCode";
 
 const $ = (id)=>document.getElementById(id);
 
@@ -455,21 +711,128 @@ function closeAdminLogin(){
 }
 function showParticipantView(){
   $("participantApp").classList.remove("hidden");
+  $("preSurveyApp").classList.add("hidden");
+  $("postSurveyApp").classList.add("hidden");
+  $("followupSurveyApp").classList.add("hidden");
   $("adminApp").classList.add("hidden");
+  $("modeNav").classList.remove("hidden");
+  $("assessmentModeBtn").classList.add("active");
+  $("preSurveyModeBtn").classList.remove("active");
+  $("postSurveyModeBtn").classList.remove("active");
+  $("followupSurveyModeBtn").classList.remove("active");
   $("heroTitle").textContent = `${APP_SETTINGS.organizationName} 생성형 AI 역량진단`;
   $("heroDesc").textContent = "사용 빈도, 활용 도구, 기능 수준, 업무 활용 범위, 서비스 등급과 학습 경험을 종합하여 개인의 현재 수준과 적합한 교육과정을 안내합니다.";
   $("adminEntryBtn").textContent = "관리자";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+function showPreSurveyView(){
+  $("participantApp").classList.add("hidden");
+  $("preSurveyApp").classList.remove("hidden");
+  $("postSurveyApp").classList.add("hidden");
+  $("followupSurveyApp").classList.add("hidden");
+  $("adminApp").classList.add("hidden");
+  $("modeNav").classList.remove("hidden");
+  $("assessmentModeBtn").classList.remove("active");
+  $("preSurveyModeBtn").classList.add("active");
+  $("postSurveyModeBtn").classList.remove("active");
+  $("followupSurveyModeBtn").classList.remove("active");
+  $("heroTitle").textContent = `${APP_SETTINGS.organizationName} AI 교육 사전설문`;
+  $("heroDesc").textContent = "이름이나 연락처 없이 익명코드로 AI 업무활용역량을 확인합니다.";
+  $("adminEntryBtn").textContent = "관리자";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showPostSurveyView(){
+  $("participantApp").classList.add("hidden");
+  $("preSurveyApp").classList.add("hidden");
+  $("postSurveyApp").classList.remove("hidden");
+  $("followupSurveyApp").classList.add("hidden");
+  $("adminApp").classList.add("hidden");
+  $("modeNav").classList.remove("hidden");
+  $("assessmentModeBtn").classList.remove("active");
+  $("preSurveyModeBtn").classList.remove("active");
+  $("postSurveyModeBtn").classList.add("active");
+  $("followupSurveyModeBtn").classList.remove("active");
+  $("heroTitle").textContent = `${APP_SETTINGS.organizationName} AI 교육 사후설문`;
+  $("heroDesc").textContent = "사전설문과 동일한 익명코드로 교육 전후의 AI 업무활용역량 변화를 확인합니다.";
+  $("adminEntryBtn").textContent = "관리자";
+  renderAnonymousCode();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showFollowupSurveyView(){
+  $("participantApp").classList.add("hidden");
+  $("preSurveyApp").classList.add("hidden");
+  $("postSurveyApp").classList.add("hidden");
+  $("followupSurveyApp").classList.remove("hidden");
+  $("adminApp").classList.add("hidden");
+  $("modeNav").classList.remove("hidden");
+  $("assessmentModeBtn").classList.remove("active");
+  $("preSurveyModeBtn").classList.remove("active");
+  $("postSurveyModeBtn").classList.remove("active");
+  $("followupSurveyModeBtn").classList.add("active");
+  $("heroTitle").textContent = `${APP_SETTINGS.organizationName} AI 교육 2주 후 설문`;
+  $("heroDesc").textContent = "사전·사후설문과 동일한 익명코드로 교육효과의 유지 정도를 확인합니다.";
+  $("adminEntryBtn").textContent = "관리자";
+  renderAnonymousCode();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 function showAdminView(){
   closeAdminLogin();
   $("participantApp").classList.add("hidden");
+  $("preSurveyApp").classList.add("hidden");
+  $("postSurveyApp").classList.add("hidden");
+  $("followupSurveyApp").classList.add("hidden");
   $("adminApp").classList.remove("hidden");
+  $("modeNav").classList.add("hidden");
   $("heroTitle").textContent = `${APP_SETTINGS.organizationName} AI 활용 현황`;
   $("heroDesc").textContent = "구성원의 응답을 종합하여 조직의 AI 활용 수준, 주요 특성 및 교육 포인트를 확인합니다.";
   $("adminEntryBtn").textContent = "진단 화면";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+let pendingSurveyAccess=null;
+const SURVEY_ACCESS={
+  pre:{label:"교육 사전설문",passwordHash:APP_SETTINGS.preSurveyPasswordHash,open:showPreSurveyView},
+  post:{label:"교육 사후설문",passwordHash:APP_SETTINGS.postSurveyPasswordHash,open:showPostSurveyView},
+  followup:{label:"교육 2주 후 설문",passwordHash:APP_SETTINGS.followupSurveyPasswordHash,open:showFollowupSurveyView}
+};
+function requestSurveyAccess(stage){
+  pendingSurveyAccess=SURVEY_ACCESS[stage];
+  $("surveyAccessTitle").textContent=`${pendingSurveyAccess.label} 비밀번호`;
+  $("surveyAccessDesc").textContent="담당자에게 안내받은 비밀번호를 입력해 주세요.";
+  $("surveyAccessPassword").value="";
+  $("surveyAccessError").style.display="none";
+  $("surveyAccessModal").classList.add("open");
+  setTimeout(()=>$("surveyAccessPassword").focus(),50);
+}
+function closeSurveyAccess(){
+  $("surveyAccessModal").classList.remove("open");
+  pendingSurveyAccess=null;
+}
+async function sha256(text){
+  const bytes=new TextEncoder().encode(text);
+  const hash=await crypto.subtle.digest("SHA-256",bytes);
+  return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function confirmSurveyAccess(){
+  if(!pendingSurveyAccess)return;
+  const inputHash=await sha256($("surveyAccessPassword").value);
+  if(inputHash!==pendingSurveyAccess.passwordHash){
+    $("surveyAccessError").textContent="비밀번호가 일치하지 않습니다.";
+    $("surveyAccessError").style.display="block";
+    $("surveyAccessPassword").select();
+    return;
+  }
+  const open=pendingSurveyAccess.open;
+  closeSurveyAccess();
+  open();
+}
+$("assessmentModeBtn").addEventListener("click",showParticipantView);
+$("preSurveyModeBtn").addEventListener("click",()=>requestSurveyAccess("pre"));
+$("postSurveyModeBtn").addEventListener("click",()=>requestSurveyAccess("post"));
+$("followupSurveyModeBtn").addEventListener("click",()=>requestSurveyAccess("followup"));
+$("surveyAccessConfirmBtn").addEventListener("click",confirmSurveyAccess);
+$("surveyAccessCloseBtn").addEventListener("click",closeSurveyAccess);
+$("surveyAccessPassword").addEventListener("keydown",e=>{if(e.key==="Enter")confirmSurveyAccess()});
+$("surveyAccessModal").addEventListener("click",e=>{if(e.target===$("surveyAccessModal"))closeSurveyAccess()});
 $("adminEntryBtn").addEventListener("click",()=>{
   const adminVisible = !$("adminApp").classList.contains("hidden");
   if(adminVisible){
@@ -485,7 +848,7 @@ $("adminLoginModal").addEventListener("click",(e)=>{
   if(e.target===$("adminLoginModal")) closeAdminLogin();
 });
 document.addEventListener("keydown",(e)=>{
-  if(e.key==="Escape") closeAdminLogin();
+  if(e.key==="Escape"){closeAdminLogin();closeSurveyAccess()}
 });
 
 function setupNoneLogic(name){
@@ -497,6 +860,340 @@ function setupNoneLogic(name){
   }));
 }
 ["tools","features","work"].forEach(setupNoneLogic);
+
+/* 교육 사전설문 */
+function generateAnonymousCode(){
+  const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes=new Uint32Array(6);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map(n=>alphabet[n%alphabet.length]).join("");
+}
+function normalizeAnonymousCode(value){
+  const normalized=String(value||"").trim().toUpperCase().replace(/\s+/g,"");
+  const raw=normalized.replace(/^\[AI교육설문\]/,"");
+  return /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(raw)?raw:null;
+}
+let postCodeConfirmed=Boolean(normalizeAnonymousCode(localStorage.getItem(CODE_STORAGE_KEY)));
+let followupCodeConfirmed=postCodeConfirmed;
+let postRecoveryMode=false;
+let followupRecoveryMode=false;
+function getStoredAnonymousCode(){return normalizeAnonymousCode(localStorage.getItem(CODE_STORAGE_KEY))}
+function codeLabel(emptyText="코드 미발급"){
+  const code=getStoredAnonymousCode();
+  return code?`[AI교육설문]${code}`:`[AI교육설문]${emptyText}`;
+}
+function renderAnonymousCode(){
+  const code=getStoredAnonymousCode();
+  $("anonymousCodeText").textContent=codeLabel("코드 미발급");
+  $("completedCode").textContent=codeLabel("코드 미발급");
+  $("postCodeText").textContent=codeLabel("코드 미입력");
+  $("postCompletedCode").textContent=codeLabel("코드 미입력");
+  $("followupCodeText").textContent=codeLabel("코드 미입력");
+  $("followupCompletedCode").textContent=codeLabel("코드 미입력");
+  $("issueCodeBtn").textContent=code?"익명코드 재발급":"익명코드 발급받기";
+}
+async function copySurveyCode(){
+  const code=getStoredAnonymousCode();
+  if(!code){
+    alert("먼저 ‘익명코드 발급받기’ 버튼을 눌러 주세요.");
+    $("issueCodeBtn").focus();
+    return;
+  }
+  const text=`[AI교육설문]${code}`;
+  try{
+    await navigator.clipboard.writeText(text);
+    alert("익명코드를 복사했습니다. 개인톡이나 메모장에 저장해 주세요.");
+  }catch{
+    prompt("아래 코드를 복사해 개인톡이나 메모장에 저장해 주세요.",text);
+  }
+}
+$("copyCodeBtn").addEventListener("click",copySurveyCode);
+$("copyCompletedCodeBtn").addEventListener("click",copySurveyCode);
+$("issueCodeBtn").addEventListener("click",()=>{
+  const oldCode=getStoredAnonymousCode();
+  if(oldCode&&!confirm("코드를 재발급하면 기존 코드와의 평가 연결이 끊어집니다. 정말 새 코드를 발급할까요?"))return;
+  const code=generateAnonymousCode();
+  localStorage.setItem(CODE_STORAGE_KEY,code);
+  postCodeConfirmed=false;
+  followupCodeConfirmed=false;
+  postRecoveryMode=false;
+  followupRecoveryMode=false;
+  renderAnonymousCode();
+  $("savedCodeInput").value="";
+  $("savedCodeStatus").textContent=`[AI교육설문]${code}가 발급되었습니다. 코드 복사 후 개인톡이나 메모장에 저장해 주세요.`;
+  $("savedCodeStatus").style.color="#c9ffdf";
+});
+$("applySavedCodeBtn").addEventListener("click",()=>{
+  const code=normalizeAnonymousCode($("savedCodeInput").value);
+  if(!code){
+    $("savedCodeStatus").textContent="코드를 확인해 주세요. [AI교육설문] 뒤의 영문·숫자 6자리가 필요합니다.";
+    $("savedCodeStatus").style.color="#ffd6d2";
+    $("savedCodeInput").focus();
+    return;
+  }
+  localStorage.setItem(CODE_STORAGE_KEY,code);
+  postCodeConfirmed=true;
+  followupCodeConfirmed=true;
+  postRecoveryMode=false;
+  followupRecoveryMode=false;
+  renderAnonymousCode();
+  $("savedCodeInput").value=`[AI교육설문]${code}`;
+  $("savedCodeStatus").textContent="저장한 코드를 적용했습니다. 이 기기에도 자동으로 기억됩니다.";
+  $("savedCodeStatus").style.color="#c9ffdF";
+});
+$("savedCodeInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    $("applySavedCodeBtn").click();
+  }
+});
+function applyPostSavedCode(){
+  const code=normalizeAnonymousCode($("postSavedCodeInput").value);
+  if(!code){
+    $("postSavedCodeStatus").textContent="코드를 확인해 주세요. [AI교육설문] 뒤의 영문·숫자 6자리가 필요합니다.";
+    $("postSavedCodeStatus").style.color="#ffd6d2";
+    $("postSavedCodeInput").focus();
+    return;
+  }
+  localStorage.setItem(CODE_STORAGE_KEY,code);
+  postCodeConfirmed=true;
+  followupCodeConfirmed=true;
+  postRecoveryMode=false;
+  followupRecoveryMode=false;
+  renderAnonymousCode();
+  $("postSavedCodeInput").value=`[AI교육설문]${code}`;
+  $("postSavedCodeStatus").textContent="사전설문 코드를 적용했습니다. 위 표시 코드가 저장한 코드와 같은지 확인해 주세요.";
+  $("postSavedCodeStatus").style.color="#c9ffdf";
+}
+$("applyPostSavedCodeBtn").addEventListener("click",applyPostSavedCode);
+$("postSavedCodeInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    applyPostSavedCode();
+  }
+});
+function applyFollowupSavedCode(){
+  const code=normalizeAnonymousCode($("followupSavedCodeInput").value);
+  if(!code){
+    $("followupSavedCodeStatus").textContent="코드를 확인해 주세요. [AI교육설문] 뒤의 영문·숫자 6자리가 필요합니다.";
+    $("followupSavedCodeStatus").style.color="#ffd6d2";
+    $("followupSavedCodeInput").focus();
+    return;
+  }
+  localStorage.setItem(CODE_STORAGE_KEY,code);
+  postCodeConfirmed=true;
+  followupCodeConfirmed=true;
+  postRecoveryMode=false;
+  followupRecoveryMode=false;
+  renderAnonymousCode();
+  $("followupSavedCodeInput").value=`[AI교육설문]${code}`;
+  $("followupSavedCodeStatus").textContent="기존 설문 코드를 적용했습니다. 위 표시 코드가 저장한 코드와 같은지 확인해 주세요.";
+  $("followupSavedCodeStatus").style.color="#c9ffdf";
+}
+$("applyFollowupSavedCodeBtn").addEventListener("click",applyFollowupSavedCode);
+$("followupSavedCodeInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    applyFollowupSavedCode();
+  }
+});
+function issueRecoveryCode(target){
+  const label=target==="post"?"사후설문":"2주 후 설문";
+  if(!confirm(`기존 익명코드는 무기명이라 조회할 수 없습니다.\n\n새 복구코드로 ${label}에 참여할 수 있지만 기존 사전결과와 개인별 연결은 되지 않습니다. 계속할까요?`))return;
+  const code=generateAnonymousCode();
+  localStorage.setItem(CODE_STORAGE_KEY,code);
+  postCodeConfirmed=true;
+  followupCodeConfirmed=true;
+  if(target==="post"){
+    postRecoveryMode=true;
+    followupRecoveryMode=true;
+    $("postSavedCodeInput").value=`[AI교육설문]${code}`;
+    $("postSavedCodeStatus").textContent="분실 복구코드가 발급되었습니다. 기존 사전응답과는 연결되지 않습니다.";
+    $("postSavedCodeStatus").style.color="#ffe0a3";
+  }else{
+    followupRecoveryMode=true;
+    $("followupSavedCodeInput").value=`[AI교육설문]${code}`;
+    $("followupSavedCodeStatus").textContent="분실 복구코드가 발급되었습니다. 기존 시점 응답과는 연결되지 않습니다.";
+    $("followupSavedCodeStatus").style.color="#ffe0a3";
+  }
+  renderAnonymousCode();
+}
+$("lostPostCodeBtn").addEventListener("click",()=>issueRecoveryCode("post"));
+$("lostFollowupCodeBtn").addEventListener("click",()=>issueRecoveryCode("followup"));
+$("preQuestions").innerHTML=PRE_QUESTIONS.map((q,i)=>`
+  <div class="pre-question">
+    <h3>${i+1}. ${q}</h3>
+    <div class="likert">${PRE_SCALE.map((label,j)=>`
+      <label class="choice"><input type="radio" name="preQ${i+1}" value="${j+1}"><span><b>${j+1}점</b><br>${label}</span></label>
+    `).join("")}</div>
+  </div>`).join("");
+$("postQuestions").innerHTML=PRE_QUESTIONS.map((q,i)=>`
+  <div class="pre-question">
+    <h3>${i+1}. ${q}</h3>
+    <div class="likert">${PRE_SCALE.map((label,j)=>`
+      <label class="choice"><input type="radio" name="postQ${i+1}" value="${j+1}"><span><b>${j+1}점</b><br>${label}</span></label>
+    `).join("")}</div>
+  </div>`).join("");
+$("followupQuestions").innerHTML=PRE_QUESTIONS.map((q,i)=>`
+  <div class="pre-question">
+    <h3>${i+1}. ${q}</h3>
+    <div class="likert">${PRE_SCALE.map((label,j)=>`
+      <label class="choice"><input type="radio" name="followupQ${i+1}" value="${j+1}"><span><b>${j+1}점</b><br>${label}</span></label>
+    `).join("")}</div>
+  </div>`).join("");
+renderAnonymousCode();
+
+$("preSurveyForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const rawCode=getStoredAnonymousCode();
+  if(!rawCode){
+    $("preSaveStatus").className="status fail";
+    $("preSaveStatus").textContent="먼저 ‘익명코드 발급받기’ 버튼을 눌러 코드를 발급받아 주세요.";
+    $("issueCodeBtn").focus();
+    $("issueCodeBtn").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  const answers=PRE_QUESTIONS.map((_,i)=>Number(document.querySelector(`input[name="preQ${i+1}"]:checked`)?.value||0));
+  if(answers.some(v=>!v)){
+    $("preError").style.display="block";
+    const first=answers.findIndex(v=>!v);
+    $("preQuestions").children[first].scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  $("preError").style.display="none";
+  const status=$("preSaveStatus");
+  status.className="status saving";status.textContent="사전설문을 저장하고 있습니다…";
+  const average=Math.round((answers.reduce((a,b)=>a+b,0)/answers.length)*100)/100;
+  const payload={
+    surveyId:APP_SETTINGS.surveyId,
+    surveyName:APP_SETTINGS.surveyName,
+    organizationName:APP_SETTINGS.organizationName,
+    assessmentStage:PRE_SURVEY_STAGE,
+    anonymousCode:rawCode,
+    codeLabel:`[AI교육설문]${rawCode}`,
+    answers,
+    averageScore:average,
+    submittedAt:serverTimestamp(),
+    clientSubmittedAt:new Date().toISOString()
+  };
+  try{
+    await addDoc(collection(db,PRE_RESPONSES),payload);
+    postCodeConfirmed=true;
+    followupCodeConfirmed=true;
+    status.className="status success";status.textContent="사전설문이 정상적으로 저장되었습니다.";
+    $("completedCode").textContent=payload.codeLabel;
+    $("preSurveyForm").style.display="none";
+    $("preDone").style.display="block";
+    $("preDone").scrollIntoView({behavior:"smooth",block:"center"});
+  }catch(err){
+    console.error(err);
+    status.className="status fail";status.textContent="설문 저장에 실패했습니다. 잠시 후 다시 제출해 주세요.";
+  }
+});
+
+$("postSurveyForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  if(!postCodeConfirmed){
+    $("postSaveStatus").className="status fail";
+    $("postSaveStatus").textContent="사전설문 때 저장한 코드를 먼저 입력하고 ‘이 코드 사용하기’를 눌러 주세요.";
+    $("postSavedCodeInput").focus();
+    $("postSavedCodeInput").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  const rawCode=getStoredAnonymousCode();
+  if(!rawCode){
+    $("postSaveStatus").className="status fail";
+    $("postSaveStatus").textContent="사전설문 때 저장한 코드를 입력하고 ‘이 코드 사용하기’를 눌러 주세요.";
+    return;
+  }
+  const answers=PRE_QUESTIONS.map((_,i)=>Number(document.querySelector(`input[name="postQ${i+1}"]:checked`)?.value||0));
+  if(answers.some(v=>!v)){
+    $("postError").style.display="block";
+    const first=answers.findIndex(v=>!v);
+    $("postQuestions").children[first].scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  $("postError").style.display="none";
+  const status=$("postSaveStatus");
+  status.className="status saving";status.textContent="사후설문을 저장하고 있습니다…";
+  const average=Math.round((answers.reduce((a,b)=>a+b,0)/answers.length)*100)/100;
+  const payload={
+    surveyId:APP_SETTINGS.surveyId,
+    surveyName:APP_SETTINGS.surveyName,
+    organizationName:APP_SETTINGS.organizationName,
+    assessmentStage:POST_SURVEY_STAGE,
+    codeRecovery:postRecoveryMode,
+    anonymousCode:rawCode,
+    codeLabel:`[AI교육설문]${rawCode}`,
+    answers,
+    averageScore:average,
+    submittedAt:serverTimestamp(),
+    clientSubmittedAt:new Date().toISOString()
+  };
+  try{
+    await addDoc(collection(db,PRE_RESPONSES),payload);
+    status.className="status success";status.textContent="사후설문이 정상적으로 저장되었습니다.";
+    $("postCompletedCode").textContent=payload.codeLabel;
+    $("postSurveyForm").style.display="none";
+    $("postDone").style.display="block";
+    $("postDone").scrollIntoView({behavior:"smooth",block:"center"});
+  }catch(err){
+    console.error(err);
+    status.className="status fail";status.textContent="설문 저장에 실패했습니다. 잠시 후 다시 제출해 주세요.";
+  }
+});
+
+$("followupSurveyForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  if(!followupCodeConfirmed){
+    $("followupSaveStatus").className="status fail";
+    $("followupSaveStatus").textContent="사전·사후설문 때 저장한 코드를 먼저 입력하고 ‘이 코드 사용하기’를 눌러 주세요.";
+    $("followupSavedCodeInput").focus();
+    $("followupSavedCodeInput").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  const rawCode=getStoredAnonymousCode();
+  if(!rawCode){
+    $("followupSaveStatus").className="status fail";
+    $("followupSaveStatus").textContent="저장한 익명코드를 입력해 주세요.";
+    return;
+  }
+  const answers=PRE_QUESTIONS.map((_,i)=>Number(document.querySelector(`input[name="followupQ${i+1}"]:checked`)?.value||0));
+  if(answers.some(v=>!v)){
+    $("followupError").style.display="block";
+    const first=answers.findIndex(v=>!v);
+    $("followupQuestions").children[first].scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  $("followupError").style.display="none";
+  const status=$("followupSaveStatus");
+  status.className="status saving";status.textContent="2주 후 설문을 저장하고 있습니다…";
+  const average=Math.round((answers.reduce((a,b)=>a+b,0)/answers.length)*100)/100;
+  const payload={
+    surveyId:APP_SETTINGS.surveyId,
+    surveyName:APP_SETTINGS.surveyName,
+    organizationName:APP_SETTINGS.organizationName,
+    assessmentStage:FOLLOWUP_SURVEY_STAGE,
+    codeRecovery:followupRecoveryMode,
+    anonymousCode:rawCode,
+    codeLabel:`[AI교육설문]${rawCode}`,
+    answers,
+    averageScore:average,
+    submittedAt:serverTimestamp(),
+    clientSubmittedAt:new Date().toISOString()
+  };
+  try{
+    await addDoc(collection(db,PRE_RESPONSES),payload);
+    status.className="status success";status.textContent=`2주 후 설문이 ${payload.codeLabel} 코드로 정상 저장되었습니다.`;
+    $("followupCompletedCode").textContent=payload.codeLabel;
+    $("followupSurveyForm").style.display="none";
+    $("followupDone").style.display="block";
+    $("followupDone").scrollIntoView({behavior:"smooth",block:"center"});
+  }catch(err){
+    console.error(err);
+    status.className="status fail";status.textContent=`설문 저장에 실패했습니다. 오류: ${err.code||err.message||"알 수 없는 오류"}`;
+  }
+});
 
 function radioValue(name){
   const el=document.querySelector(`input[name="${name}"]:checked`);
@@ -650,13 +1347,17 @@ $("copyBtn").addEventListener("click",async()=>{
 
 /* 관리자 */
 let allResponses=[];
+let allPreResponses=[];
+let allPostResponses=[];
+let allFollowupResponses=[];
+let allComparisons=[];
 
 $("loginBtn").addEventListener("click",async()=>{
   $("loginError").style.display="none";
   try{
     await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);
     showAdminView();
-    await loadAdminData();
+    await loadAllAdminData();
   }catch(err){
     console.error(err);
     $("loginError").textContent="로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.";
@@ -670,13 +1371,18 @@ $("logoutBtn").addEventListener("click",async()=>{
   await signOut(auth);
   showParticipantView();
 });
-$("refreshBtn").addEventListener("click",loadAdminData);
+$("refreshBtn").addEventListener("click",loadAllAdminData);
+$("refreshPreBtn").addEventListener("click",loadPreAdminData);
+$("followupRefreshBtn").addEventListener("click",loadPreAdminData);
 $("deleteAllBtn").addEventListener("click",deleteAllResponses);
+$("deletePreBtn").addEventListener("click",()=>deleteSurveyStage(PRE_SURVEY_STAGE,"사전설문","사전삭제"));
+$("deletePostBtn").addEventListener("click",()=>deleteSurveyStage(POST_SURVEY_STAGE,"사후설문","사후삭제"));
+$("deleteFollowupBtn").addEventListener("click",()=>deleteSurveyStage(FOLLOWUP_SURVEY_STAGE,"2주 후 설문","2주삭제"));
 
 onAuthStateChanged(auth,user=>{
   if(user){
     showAdminView();
-    loadAdminData();
+    loadAllAdminData();
   }else{
     closeAdminLogin();
     showParticipantView();
@@ -740,12 +1446,41 @@ async function deleteAllResponses(){
   }
 }
 
+async function deleteSurveyStage(stage,label,confirmWord){
+  if(!auth.currentUser){alert("관리자 로그인이 필요합니다.");return;}
+  const source=stage===PRE_SURVEY_STAGE?allPreResponses:stage===POST_SURVEY_STAGE?allPostResponses:allFollowupResponses;
+  if(!source.length){alert(`삭제할 ${label} 데이터가 없습니다.`);return;}
+  if(!confirm(`${label} 응답 ${source.length}건을 삭제합니다.\n다른 시점의 데이터는 유지됩니다. 계속하시겠습니까?`))return;
+  const typed=prompt(`최종 확인을 위해 “${confirmWord}”를 입력해 주세요.`);
+  if(typed!==confirmWord){if(typed!==null)alert("입력 내용이 일치하지 않아 삭제를 취소했습니다.");return;}
+  const button=stage===PRE_SURVEY_STAGE?$("deletePreBtn"):stage===POST_SURVEY_STAGE?$("deletePostBtn"):$("deleteFollowupBtn");
+  const oldText=button.textContent;button.disabled=true;button.textContent="삭제 중…";
+  try{
+    const q=query(collection(db,PRE_RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId));
+    const snap=await getDocs(q);
+    const targets=snap.docs.filter(item=>item.data().assessmentStage===stage);
+    for(let i=0;i<targets.length;i+=500){
+      const batch=writeBatch(db);
+      targets.slice(i,i+500).forEach(item=>batch.delete(doc(db,PRE_RESPONSES,item.id)));
+      await batch.commit();
+    }
+    alert(`${label} 데이터 ${targets.length}건을 삭제했습니다.`);
+    await loadPreAdminData();
+  }catch(err){
+    console.error(err);alert(`${label} 삭제에 실패했습니다.\n${err.code||err.message}`);
+  }finally{button.disabled=false;button.textContent=oldText;}
+}
+
+async function loadAllAdminData(){
+  await Promise.all([loadAdminData(),loadPreAdminData()]);
+}
+
 async function loadAdminData(){
   $("orgSummaryText").textContent="응답 데이터를 불러오는 중입니다…";
   try{
     const q=query(collection(db,RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId));
     const snap=await getDocs(q);
-    allResponses=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+    allResponses=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.assessmentStage).sort((a,b)=>{
       const at=a.submittedAt?.toMillis?.() ?? 0;
       const bt=b.submittedAt?.toMillis?.() ?? 0;
       return bt-at;
@@ -860,6 +1595,155 @@ $("csvBtn").addEventListener("click",()=>{
   const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download=`${APP_SETTINGS.surveyId}_AI진단결과.csv`;a.click();URL.revokeObjectURL(url);
+});
+
+async function loadPreAdminData(){
+  $("preKpiGrid").innerHTML='<div class="kpi"><div class="label">불러오는 중</div><div class="value">…</div></div>';
+  try{
+    const q=query(collection(db,PRE_RESPONSES),where("surveyId","==",APP_SETTINGS.surveyId));
+    const snap=await getDocs(q);
+    const staged=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.assessmentStage).sort((a,b)=>{
+      const at=a.submittedAt?.toMillis?.() ?? new Date(a.clientSubmittedAt||0).getTime();
+      const bt=b.submittedAt?.toMillis?.() ?? new Date(b.clientSubmittedAt||0).getTime();
+      return bt-at;
+    });
+    allPreResponses=staged.filter(x=>x.assessmentStage===PRE_SURVEY_STAGE);
+    allPostResponses=staged.filter(x=>x.assessmentStage===POST_SURVEY_STAGE);
+    allFollowupResponses=staged.filter(x=>x.assessmentStage===FOLLOWUP_SURVEY_STAGE);
+    renderPreAdmin(allPreResponses);
+    renderFollowupAdmin(allFollowupResponses,allPreResponses,allPostResponses);
+    renderSurveyComparison(allPreResponses,allPostResponses,allFollowupResponses);
+  }catch(err){
+    console.error(err);
+    $("preKpiGrid").innerHTML=`<div class="kpi" style="grid-column:1/-1"><div class="label">사전설문 데이터를 불러오지 못했습니다</div><div style="margin-top:6px;color:var(--danger)">${err.code||err.message}</div></div>`;
+  }
+}
+function renderPreAdmin(data){
+  const n=data.length;
+  const mean=n?Math.round((data.reduce((s,x)=>s+Number(x.averageScore||0),0)/n)*100)/100:0;
+  const high=n?Math.round(data.filter(x=>Number(x.averageScore)>=4).length/n*100):0;
+  const unique=new Set(data.map(x=>x.anonymousCode).filter(Boolean)).size;
+  $("preKpiGrid").innerHTML=[
+    ["누적 응답",`${n}건`],["고유 참여코드",`${unique}개`],["전체 평균",`${mean}점`],["4점 이상",`${high}%`]
+  ].map(([l,v])=>`<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div></div>`).join("");
+
+  const averages={};
+  PRE_QUESTIONS.forEach((q,i)=>{
+    const vals=data.map(x=>Number(x.answers?.[i]||0)).filter(Boolean);
+    averages[`Q${i+1} ${q}`]=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*100)/100:0;
+  });
+  const rows=Object.entries(averages);
+  $("preQuestionBars").innerHTML=rows.length?rows.map(([name,value])=>`
+    <div class="bar-item"><div class="bar-name" title="${name}">${name}</div><div class="bar-track"><div class="bar-fill" style="width:${value/5*100}%"></div></div><div class="bar-value">${value}</div></div>
+  `).join(""):'<div class="empty">응답이 없습니다.</div>';
+
+  $("preResponseTable").innerHTML=data.length?data.map(x=>{
+    const dt=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.clientSubmittedAt||Date.now());
+    const a=x.answers||[];
+    return `<tr><td>${dt.toLocaleString("ko-KR")}</td><td>${x.codeLabel||(`[AI교육설문]${x.anonymousCode||""}`)}</td><td class="numc">${Number(x.averageScore||0).toFixed(2)}</td>${PRE_QUESTIONS.map((_,i)=>`<td class="numc">${a[i]||""}</td>`).join("")}</tr>`;
+  }).join(""):'<tr><td colspan="13" class="empty">아직 저장된 사전설문 응답이 없습니다.</td></tr>';
+}
+
+function renderFollowupAdmin(data,preData,postData){
+  const preMap=latestByCode(preData),postMap=latestByCode(postData);
+  const uniqueCodes=new Set(data.map(x=>String(x.anonymousCode||"").toUpperCase()).filter(Boolean));
+  const linkedPre=[...uniqueCodes].filter(code=>preMap.has(code)).length;
+  const linkedThree=[...uniqueCodes].filter(code=>preMap.has(code)&&postMap.has(code)).length;
+  const avgScore=data.length?data.reduce((s,x)=>s+Number(x.averageScore||0),0)/data.length:0;
+  $("followupKpiGrid").innerHTML=[
+    ["전체 제출",`${data.length}건`],["고유 코드",`${uniqueCodes.size}개`],["평균점수",avgScore.toFixed(2)],
+    ["사전과 연결",`${linkedPre}개`],["3시점 연결",`${linkedThree}개`],["미연결",`${Math.max(0,uniqueCodes.size-linkedPre)}개`]
+  ].map(([l,v])=>`<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div></div>`).join("");
+
+  $("followupResponseTable").innerHTML=data.length?data.map(x=>{
+    const code=String(x.anonymousCode||"").toUpperCase();
+    const status=x.codeRecovery?"분실 신규코드":preMap.has(code)?(postMap.has(code)?"3시점 연결 가능":"사전과 연결"):"미연결";
+    const linked=status==="3시점 연결 가능"||status==="사전과 연결";
+    return `<tr><td>${responseDate(x).toLocaleString("ko-KR")}</td><td>${x.codeLabel||(`[AI교육설문]${code}`)}</td><td class="numc">${Number(x.averageScore||0).toFixed(2)}</td><td class="${linked?"delta-up":"delta-down"}">${status}</td>${PRE_QUESTIONS.map((_,i)=>`<td class="numc">${x.answers?.[i]??""}</td>`).join("")}</tr>`;
+  }).join(""):'<tr><td colspan="14" class="empty">아직 저장된 2주 후 설문 응답이 없습니다.</td></tr>';
+}
+
+function latestByCode(data){
+  const map=new Map();
+  data.forEach(x=>{
+    const code=String(x.anonymousCode||"").toUpperCase();
+    if(code&&!map.has(code))map.set(code,x);
+  });
+  return map;
+}
+function responseDate(x){
+  return x?.submittedAt?.toDate?x.submittedAt.toDate():new Date(x?.clientSubmittedAt||Date.now());
+}
+function deltaClass(value){return value>0?"delta-up":value<0?"delta-down":"delta-flat"}
+function signed(value){const n=Math.round(Number(value||0)*100)/100;return `${n>0?"+":""}${n}`}
+function renderSurveyComparison(preData,postData,followupData){
+  const preMap=latestByCode(preData),postMap=latestByCode(postData),followMap=latestByCode(followupData);
+  allComparisons=[...preMap.keys()].filter(code=>postMap.has(code)||followMap.has(code)).map(code=>{
+    const pre=preMap.get(code),post=postMap.get(code)||null,follow=followMap.get(code)||null;
+    const deltaPrePost=post?Math.round((Number(post.averageScore||0)-Number(pre.averageScore||0))*100)/100:null;
+    const deltaPostFollow=post&&follow?Math.round((Number(follow.averageScore||0)-Number(post.averageScore||0))*100)/100:null;
+    const deltaPreFollow=follow?Math.round((Number(follow.averageScore||0)-Number(pre.averageScore||0))*100)/100:null;
+    return {code,pre,post,follow,deltaPrePost,deltaPostFollow,deltaPreFollow};
+  });
+  const prePost=allComparisons.filter(x=>x.post),preFollow=allComparisons.filter(x=>x.follow),full=allComparisons.filter(x=>x.post&&x.follow);
+  const mean=(arr,getter)=>arr.length?arr.reduce((s,x)=>s+Number(getter(x)||0),0)/arr.length:0;
+  const preAvg=mean(prePost,x=>x.pre.averageScore),postAvg=mean(prePost,x=>x.post.averageScore),followAvg=mean(preFollow,x=>x.follow.averageScore);
+  const ppDelta=mean(prePost,x=>x.deltaPrePost),pfDelta=mean(full,x=>x.deltaPostFollow),p2Delta=mean(preFollow,x=>x.deltaPreFollow);
+  $("comparisonKpiGrid").innerHTML=[
+    ["사전·사후 연결",`${prePost.length}명`],["3시점 연결",`${full.length}명`],
+    ["사전 평균",preAvg.toFixed(2)],["사후 평균",postAvg.toFixed(2)],["2주 후 평균",followAvg.toFixed(2)],
+    ["사전→사후",signed(ppDelta)],["사후→2주",signed(pfDelta)],["사전→2주",signed(p2Delta)]
+  ].map(([l,v])=>`<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div></div>`).join("");
+
+  $("comparisonTable").innerHTML=allComparisons.length?allComparisons.map(x=>`
+    <tr><td>[AI교육설문]${x.code}</td><td>${responseDate(x.pre).toLocaleString("ko-KR")}</td><td>${x.post?responseDate(x.post).toLocaleString("ko-KR"):"-"}</td><td>${x.follow?responseDate(x.follow).toLocaleString("ko-KR"):"-"}</td>
+    <td class="numc">${Number(x.pre.averageScore||0).toFixed(2)}</td><td class="numc">${x.post?Number(x.post.averageScore||0).toFixed(2):"-"}</td><td class="numc">${x.follow?Number(x.follow.averageScore||0).toFixed(2):"-"}</td>
+    <td class="numc ${x.deltaPrePost===null?"":deltaClass(x.deltaPrePost)}">${x.deltaPrePost===null?"-":signed(x.deltaPrePost)}</td>
+    <td class="numc ${x.deltaPostFollow===null?"":deltaClass(x.deltaPostFollow)}">${x.deltaPostFollow===null?"-":signed(x.deltaPostFollow)}</td>
+    <td class="numc ${x.deltaPreFollow===null?"":deltaClass(x.deltaPreFollow)}">${x.deltaPreFollow===null?"-":signed(x.deltaPreFollow)}</td>
+    ${PRE_QUESTIONS.map((_,i)=>{const p=x.pre.answers?.[i]??"-",o=x.post?.answers?.[i]??"-",f=x.follow?.answers?.[i]??"-";const d=x.follow?Number(f)-Number(p):(x.post?Number(o)-Number(p):0);return `<td class="numc ${deltaClass(d)}">${p}→${o}→${f}</td>`}).join("")}</tr>
+  `).join(""):'<tr><td colspan="20" class="empty">동일 코드로 연결된 시점별 응답이 없습니다.</td></tr>';
+}
+
+$("preCsvBtn").addEventListener("click",()=>{
+  if(!allPreResponses.length)return alert("다운로드할 사전설문 응답이 없습니다.");
+  const rows=[["제출일시","익명코드","평균",...PRE_QUESTIONS.map((_,i)=>`Q${i+1}`)]];
+  allPreResponses.forEach(x=>{
+    const dt=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.clientSubmittedAt||Date.now());
+    rows.push([dt.toLocaleString("ko-KR"),x.codeLabel||(`[AI교육설문]${x.anonymousCode||""}`),x.averageScore,...(x.answers||[])]);
+  });
+  const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`${APP_SETTINGS.surveyId}_AI교육_사전설문.csv`;a.click();URL.revokeObjectURL(url);
+});
+
+$("followupCsvBtn").addEventListener("click",()=>{
+  if(!allFollowupResponses.length)return alert("다운로드할 2주 후 설문 응답이 없습니다.");
+  const preMap=latestByCode(allPreResponses),postMap=latestByCode(allPostResponses);
+  const rows=[["제출일시","익명코드","평균","연결상태",...PRE_QUESTIONS.map((_,i)=>`Q${i+1}`)]];
+  allFollowupResponses.forEach(x=>{
+    const code=String(x.anonymousCode||"").toUpperCase();
+    const status=x.codeRecovery?"분실 신규코드":preMap.has(code)?(postMap.has(code)?"3시점 연결 가능":"사전과 연결"):"미연결";
+    rows.push([responseDate(x).toLocaleString("ko-KR"),x.codeLabel||(`[AI교육설문]${code}`),x.averageScore,status,...(x.answers||[])]);
+  });
+  const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`${APP_SETTINGS.surveyId}_AI교육_2주후_원본응답.csv`;a.click();URL.revokeObjectURL(url);
+});
+
+$("comparisonCsvBtn").addEventListener("click",()=>{
+  if(!allComparisons.length)return alert("다운로드할 시점별 연결 결과가 없습니다.");
+  const headers=["익명코드","사전일시","사후일시","2주후일시","사전평균","사후평균","2주후평균","사전→사후","사후→2주","사전→2주"];
+  PRE_QUESTIONS.forEach((_,i)=>headers.push(`Q${i+1}_사전`,`Q${i+1}_사후`,`Q${i+1}_2주후`));
+  const rows=[headers];
+  allComparisons.forEach(x=>{
+    const row=[`[AI교육설문]${x.code}`,responseDate(x.pre).toLocaleString("ko-KR"),x.post?responseDate(x.post).toLocaleString("ko-KR"):"",x.follow?responseDate(x.follow).toLocaleString("ko-KR"):"",x.pre.averageScore,x.post?.averageScore??"",x.follow?.averageScore??"",x.deltaPrePost??"",x.deltaPostFollow??"",x.deltaPreFollow??""];
+    PRE_QUESTIONS.forEach((_,i)=>row.push(x.pre.answers?.[i]??"",x.post?.answers?.[i]??"",x.follow?.answers?.[i]??""));
+    rows.push(row);
+  });
+  const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`${APP_SETTINGS.surveyId}_AI교육_3시점_변화.csv`;a.click();URL.revokeObjectURL(url);
 });
 </script>
 </body>
